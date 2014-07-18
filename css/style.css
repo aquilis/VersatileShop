@@ -1,0 +1,123 @@
+body {
+    background-image:url('bg01.jpg');
+    background-repeat:repeat;
+}
+
+footer {
+    background: url('bg02.jpg') top center repeat-x;
+    border-radius: 5px;
+    padding: 20px 0;
+    margin: 0 auto;
+    clear: both;
+    color: #7b7b7b;
+    text-shadow: 2px 2px 1px rgba(0,0,0,.5);
+    -moz-text-shadow: 2px 2px 1px rgba(0,0,0,.5);
+    -webkit-text-shadow: 2px 2px 1px rgba(0,0,0,.5);
+}
+
+footer #panel {
+  width: 30%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+footer #panel .panel-inner {
+  display: inline;
+}
+
+.loginFormContainer {
+  border-radius: 15px;
+  border-width: 2px;
+  border-style: groove;
+  padding: 16px;
+  width: 500px;
+}
+
+
+.carouselHolder {
+  max-width: 900px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+#mainColumn {
+  max-width: 95%;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 50px;
+  position: relative;
+  height:100%;
+}
+
+#contentArea {
+  width: 96%;
+  position: relative;
+  border-radius: 10px;
+  padding: 0.75em;
+  padding-left: 0px;
+  margin-top: 24px; 
+  float: left;
+}
+
+.sectionHodler {
+  width: 100%;
+  position: relative;
+  /*border-radius: 10px;
+  background: rgba(255,255,255,0.5);*/
+  margin-top: 24px; 
+}
+
+.section {
+  width: 80%;
+  position: relative;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.10);
+  padding: 0.75em;
+  float: left;
+}
+
+.login-form {
+  border-radius: 10px;
+  background: rgba(255,255,255,0.10);
+  width: 15%;
+  padding: 32px;
+}
+
+.msg-post-form {
+  padding: 32px;
+  padding-left: 0px;
+  width: 67%;
+}
+
+.msg-post-form button {
+  margin-top: 16px;
+  margin-left: 32px;
+}
+
+.msg-post-form label {
+  margin-left: 32px;
+}
+
+.msg-post-form textarea {
+  resize: none;
+  margin-left: 32px;
+}
+
+.forum-entries-holder {
+  width: 67%;
+}
+
+.result-panel {
+  margin-top: 32px;
+  width: 67%;
+}
+
+#home-logo img {
+  height: 50px;
+}
+
+#home-logo {
+  padding-left: 16px;
+  padding-right: 24px;
+}
