@@ -15,7 +15,7 @@
 	  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	    <ul class="nav navbar-nav">
 	      <li><a href="index.php">Home</a></li>
-	      <li><a href="shop.php">Shop</a></li>
+	      <li><a href="shop.php"><span class="glyphicon glyphicon glyphicon-tags"></span>  Shop</a></li>
 	      <li><a href="shopping-cart.php"><span class="glyphicon glyphicon-shopping-cart"></span>  View shopping cart</a></li>
 	    </ul>
 	    <form class="navbar-form navbar-left" role="search">

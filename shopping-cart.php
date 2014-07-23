@@ -20,15 +20,18 @@ $(document).ready(function() {
     				itemsHtml +=
     						  "<div class=\"panel panel-info\">" + 
 	    						  "<div class=\"panel-heading\"><h4>"+ 
-	    						  	element.name +
+	    						  	element.title +
 	    						  "</h4></div>"+
 	    						  "<div class=\"panel-body\">"+ 
-		    						  "<p>Quantity: " + element.qty +
+	    						  	  " <a href='shop.php?productID="+element.productID+"' class=\"thumbnail shopping-cart-thumbnail\">" +
+      								  "<img src='"+element.thumbnailPath+"' alt=\"thumbnail\">" +
+    								  "</a>"+
+		    						  "<p>Quantity: " + element.quantity +
 		    						  "<p>Price for a single game: " + element.price +
-		    						  "<p>Price total: " + (element.price*element.qty) +
+		    						  "<p>Price total: " + (element.price*element.quantity) +
 	    						  "</div>"+
     						  "</div>";
-    						  totalSum+= (element.price*element.qty);
+    						  totalSum+= (element.price*element.quantity);
 
 			});
 			itemsHtml+="<h4>Total: " + totalSum + "$</h4>";
@@ -49,7 +52,7 @@ $(document).ready(function() {
 </head>
 
 
-<body>
+<body class="paper-textured">
 	<?php include_once("templates/header.php"); ?>
 
   <div id="mainColumn">

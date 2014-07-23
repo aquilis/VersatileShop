@@ -136,7 +136,7 @@ include "lib/acc_functions.php";
     </script>
 </head>
 
-<body>
+<body class="paper-textured">
 	<?php include_once("templates/header.php"); ?>
 
 <div id="mainColumn">

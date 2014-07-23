@@ -47,7 +47,7 @@ function displayAllProducts() {
 			  				  "</div>"; 
 
 			});
-			$(".row").html(itemsHtml);
+			$("#items-area").html(itemsHtml);
 	}).done(function() {
 		$(".product-tile .btn-primary").click(function() {
 			loadProduct($(this).attr("productID"));
@@ -59,17 +59,29 @@ function displayAllProducts() {
 * Loads in the page the data for the product with the given ID.
 */
 function loadProduct(productID) {
+		$("body").removeClass("paper-textured");
+		$("body").addClass("carbon-textured");
 		utils.displayAjaxLoader("contentArea", "Loading...", false);
 		$.getJSON("models/shop-model.php?productID=" + productID, function(data) {
-			var html = "<div class='jumbotron'>"+ 
+			var html =  "<div class='jumbotron white-textured soft-frame'>"+ 
 					    "<h1 style='text-align: center'>"+ data.title +"</h1>"+
 					    constructImageCarousel(data.images) +
 					    constructVideosGrid(data.videos) +
-					    "<p><b>Added on:</b></br>"+ data.dateAdded +"</p>"+ 
-					    "<p><b>Developer:</b></br>"+ data.manufacturer +"</p>"+ 
-						"<p><b>Description:</b></br>"+ data.description +"</p>"+ 
-						"<p><b>Price:</b>"+ data.price +"$</p>"+
-						"<p><button productID='"+ data.productID +"' class='btn-lg btn-primary'>Add to cart</button></p>" + 
+					    "<p class=\"product-section\"><b>Added on:</b></br>"+ data.dateAdded +"</p>"+ 
+					    "<p class=\"product-section\"><b>Developer:</b></br>"+ data.manufacturer +"</p>"+ 
+						"<p class=\"product-section\"><b>Description:</b></br>"+ data.description +"</p>"+ 
+						"<p class=\"product-section\"><b>Price:</b>"+ data.price +"$</p>"+
+						"<p class=\"product-section\"><button id=\"add-to-cart-btn\"productID='"+ data.productID +"' class='btn-lg btn-primary'><span class='glyphicon glyphicon-shopping-cart'></span>Add to cart</button>"+
+						"<span style='margin-left: 18px'>Quantity:  </span>" +
+						"<select id=\"quantity-picker\" class=\"form-control picker-sml\">" + 
+						"<option>1</option>" +
+						"<option>2</option>" +
+						"<option>3</option>" +
+						"<option>4</option>" +
+						"<option>5</option>" +
+						"</select>" +
+						"</p>" + 
+						"<div id=\"shopping-cart-result\" class=\"result-panel-sml\"></div>"+
 						"</div>";
 			$("#contentArea").html(html);
 			//change the browser URL so that the product can be bookmarked
@@ -78,6 +90,15 @@ function loadProduct(productID) {
 			$(".nav li:contains('Shop')").removeClass("active");
 			}).done(function() {
 				//TODO: attach button handlers here
+				$("#back-to-shop").click(function() {
+					//displayAllProducts();
+				});
+
+				$("#add-to-cart-btn").click(function() {
+					var id = $(this).attr("productID");
+					var quantity = $("#quantity-picker").find(":selected").text();
+					addToCart(id, quantity);
+				});
 			})
 }
 
@@ -88,7 +109,8 @@ function constructImageCarousel(imagesArray) {
 	if(imagesArray.length<1) {
 		return "";
 	}
-	var html= "<div id=\"product-images-carousel\" class=\"carousel slide\" data-ride=\"carousel\">" + 
+	var html= "<div class=\"carousel-holder\">"+
+			  "<div id=\"product-images-carousel\" class=\"product-section carousel slide\" data-ride=\"carousel\">" + 
 			  "<ol class=\"carousel-indicators\">" + 
 			  "<li data-target=\"#product-images-carousel\" data-slide-to=\"0\" class=\"active\"></li>";
 
@@ -120,8 +142,27 @@ function constructImageCarousel(imagesArray) {
 			  "<a class=\"right carousel-control\" href=\"#product-images-carousel\" data-slide=\"next\">"+
 			  "<span class=\"glyphicon glyphicon-chevron-right\"></span>"+
 			  "</a>"+
+			  "</div>" +
 			  "</div>";
 	return html;
+}
+
+/**
+*	Adds the product with the given ID to the shopping cart.
+**/
+function addToCart(productID, quantity) {
+	$.post( "models/shopping-cart-model.php", {productID: productID, quantity: quantity}, function() {
+		//handlers here
+	})
+	 .done(function(data) {
+	 	var html= "<div class=\"alert alert-success\" role=\"alert\"><span class=\"glyphicon glyphicon-ok\"></span>   "+ data +"</div>";
+	    var resulPanel = $("#shopping-cart-result");
+	    resulPanel.fadeIn("fast");
+	    resulPanel.html(html);
+	    resulPanel.delay(4000).fadeOut(1200, function() {
+          		resulPanel.html("").hide();
+        });
+	 });
 }
 
 /**
@@ -134,7 +175,7 @@ function constructVideosGrid(videosArray) {
 	var html="";
 	$(videosArray).each(function(index, element) {
     				html += element.videoCaption +
-    				"</br><iframe width=\"560\" height=\"315\" src=\""+element.videoSrc+"\" frameborder=\"0\" allowfullscreen></iframe></br>";
+    				"</br><iframe class=\"product-section\" width=\"560\" height=\"315\" src=\""+element.videoSrc+"\" frameborder=\"0\" allowfullscreen></iframe></br>";
 	});
 	return html;
 }
@@ -142,7 +183,7 @@ function constructVideosGrid(videosArray) {
 </head>
 
 
-<body>
+<body class="paper-textured">
 	<?php include_once("templates/header.php"); ?>
 
   <div id="mainColumn">

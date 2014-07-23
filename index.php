@@ -24,13 +24,13 @@ if (isset($_GET['action'])) {
 </script>
 </head>
 
-<body>
+<body class="paper-textured">
 <?php include_once("templates/header.php"); ?>
 
   <div id="mainColumn">
 
  		<!-- =============== CAROUSEL ====================-->
-		<div class="carouselHolder">
+		<div class="carousel-holder">
  			<h3 style="text-align:center">Order GTA V for PS/Xbox now and you gain a 15% discount!</h3>
 
 			<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">

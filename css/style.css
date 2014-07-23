@@ -1,6 +1,23 @@
 body {
-    background-image:url('bg01.jpg');
+}
+
+.paper-textured {
+    background-image:url('../images/paper.png');
     background-repeat:repeat;
+}
+
+.white-textured {
+    background-image:url('../images/white-txt.png');
+    background-repeat:repeat;
+}
+
+.carbon-textured {
+    background-image:url('../images/carbon-fibre.png');
+    background-repeat:repeat;
+}
+
+.soft-frame {
+  border-radius: 15px;
 }
 
 footer {
@@ -35,7 +52,7 @@ footer #panel .panel-inner {
 }
 
 
-.carouselHolder {
+.carousel-holder {
   max-width: 900px;
   margin-right: auto;
   margin-left: auto;
@@ -120,4 +137,25 @@ footer #panel .panel-inner {
 #home-logo {
   padding-left: 16px;
   padding-right: 24px;
+}
+
+.product-section {
+  margin-bottom: 20px;
+}
+
+.picker-sml {
+  display: inline;
+  width: 64px;
+}
+
+.shopping-cart-thumbnail {
+  float: left;
+  max-width: 220px;
+  margin-right: 24px;
+}
+
+.result-panel-sml {
+  width: 600px;
+  display: none;
+  font-size: 18px;
 }
