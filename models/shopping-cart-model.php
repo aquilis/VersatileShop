@@ -17,7 +17,9 @@ if (session_status() == PHP_SESSION_NONE) {
 						    header('Content-Type: application/json');
 							echo json_encode($jsonData);
 					} else {
-						    echo 'Your Cart is empty';
+						//if the shopping cart is undefiined (non-set), just return an empty array
+						header('Content-Type: application/json');
+						echo json_encode(array());
 					}
 				} else if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					//only the product ID and the requested quantity are passed via the POST
@@ -38,6 +40,7 @@ if (session_status() == PHP_SESSION_NONE) {
 					                }
 					            }
 					}
+					//if a product with that ID doesn't exit yet in the shopping cart, get its details from the DB and add it to the cart
 					if($found==false) {
 					            	$con = mysqli_connect("localhost","root","","db_versatile_shop"); 
 									if (mysqli_connect_errno()) {
@@ -62,7 +65,21 @@ if (session_status() == PHP_SESSION_NONE) {
 					echo $message;
 		} else if ($_SERVER["REQUEST_METHOD"] == "DELETE") {
 			if(isset($_SESSION["products"])) {
-				unset($_SESSION["products"]);
+				//the id of the product for removing is passed via the request url's query params
+				if(isset($_GET["productID"])) {
+					foreach ($_SESSION["products"] as $k => $v) {
+					    if($v["productID"] == $_GET["productID"]) {
+					    	unset($_SESSION["products"][$k]);
+					        echo "Product successfully removed from the shopping cart";
+					        break;
+					    }
+					}
+				} else {
+					//if no specific product id is given, remove all items from the shopping cart
+					//unset($_SESSION["products"]);
+					$_SESSION["products"] = [];
+					echo "Your shopping cart is now empty";
+				}
 			}
 		}
 ?>

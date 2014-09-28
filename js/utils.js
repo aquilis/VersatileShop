@@ -26,6 +26,20 @@ utils.displayAjaxLoader = function(parentElementId, loadingPrompt, append) {
 }
 
 /**
+*	Asynchronously displays a result text with the given content in the given parent element and 
+* 	fade it out after a certain time has passed (4 sec).
+	@param speed - indicates the fade speed of the panel and can be slow, fast, normal or given in ms 
+**/
+utils.displayAndFadeOutResultsPanel = function(parentElementId, content, fadeSpeed) {
+	var resultPanel = $("#"+ parentElementId);
+	 resultPanel.fadeIn(fadeSpeed);
+	 resultPanel.html(content);
+	 resultPanel.delay(4000).fadeOut(1200, function() {
+	    resultPanel.html("").hide();
+	 });
+}
+
+/**
  * Performs the ajax GET request to the url and passes the response (as a js
  * object) to the handlerFunction
  * 

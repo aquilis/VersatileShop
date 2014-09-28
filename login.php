@@ -90,6 +90,11 @@ include 'lib/acc_functions.php';
 						if(isAdmin(trim($_POST["username"]))) {
 							$_SESSION['isAdmin'] = 1;
 						}
+						//reset the shopping cart when a new user logs in
+						//TODO: is this the right way??
+						if(isset($_SESSION['products'])) {
+							unset($_SESSION['products']);
+						}
 						setcookie('lastLogin', date("d/m/y H:i:s"), 60 * 60 * 24 * 60 + time());
 						header("Location: index.php");
 						exit;

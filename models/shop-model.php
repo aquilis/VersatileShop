@@ -18,7 +18,9 @@
 						$jsonData['manufacturer'] = $row[4];
 						$jsonData['dateAdded'] = $row[5];
 						//get the images for this product from the images table and add them to the response
-						$query = "SELECT imagePath, imageDescription FROM images inner join products on images.productID=products.productID where products.productID=".mysqli_real_escape_string($con, $_GET["productID"]);    
+						//TODO The inner join is not really needed here when selecting by id
+						//$query = "SELECT imagePath, imageDescription FROM images inner join products on images.productID=products.productID where products.productID=".mysqli_real_escape_string($con, $_GET["productID"]);    
+						$query = "SELECT imagePath, imageDescription FROM images where productID=".mysqli_real_escape_string($con, $_GET["productID"]);    
 						$result = mysqli_query($con, $query);
 						$jsonData['images'] = array();
 						$rowArray = array();
@@ -28,7 +30,7 @@
 	    					array_push($jsonData['images'], $rowArray);
 	    				}
 	    				//get the videos for this product from the videos table and add them to the response
-						$query = "SELECT videoSrc, videoCaption FROM videos inner join products on videos.productID=products.productID where products.productID=".mysqli_real_escape_string($con, $_GET["productID"]);    
+						$query = "SELECT videoSrc, videoCaption FROM videos where productID=".mysqli_real_escape_string($con, $_GET["productID"]);    
 						$result = mysqli_query($con, $query);
 						$jsonData['videos'] = array();
 						$rowArray = array();
@@ -40,7 +42,7 @@
 						header('Content-Type: application/json');
 						echo json_encode($jsonData);
 					} else {
-						//return all products (basic details only) for listing purpose
+						//return all products (the most basic details only) for listing purpose in the shop's landing page
 						$con = mysqli_connect("localhost","root","","db_versatile_shop"); 
 						if (mysqli_connect_errno()) {
 							echo "Failed to connect to MySQL: " . mysqli_connect_error();

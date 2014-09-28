@@ -159,3 +159,37 @@ footer #panel .panel-inner {
   display: none;
   font-size: 18px;
 }
+
+/* usually used for the 'X' button in the upper-right corner for closing a window or for deleting a product */
+.close-delete-btn {
+  float: right;
+  cursor: pointer;
+}
+
+.small-form {
+  width: 40%;
+}
+
+.small-form input, button {
+  margin-top: 16px;
+}
+
+ul.ui-autocomplete.ui-menu {
+  width: 36%;
+  left: 3.1% !important;
+  list-style-position: inside;
+  cursor: pointer;
+  z-index: 1000;
+  font-size: 18px;
+  color: black;
+  font-weight: bold;
+  list-style-type: none;
+}
+
+ul.ui-autocomplete.ui-menu li{
+  background-color: white;
+}
+
+ul.ui-autocomplete.ui-menu li:hover {
+  background-color: #C0C0C0;
+}
