@@ -177,3 +177,13 @@ utils.generateParam = function(initialString, paramName, inputTextId) {
 		return "&" + paramName + "=" + fieldParams;
 	}
 }
+
+/**
+*	Gets the base URL of the site, cutting out the current page (everything after the last slash). 
+*	Example:
+* 	http://localhost/VersatileShop/search.php 
+*	will result in: http://localhost/VersatileShop
+**/
+utils.getBaseURL = function() {
+	return document.URL.substring(0, document.URL.lastIndexOf("/"));
+}
