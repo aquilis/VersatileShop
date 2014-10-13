@@ -16,10 +16,15 @@
 	      <li><a href="search.php"><span class="glyphicon glyphicon-search"></span>  Search</a></li>
 	    </ul>
 	    <ul class="nav navbar-nav navbar-right">
-	      <li><a href="forum.php">Talk <span class="label label-default">beta</span></a></li>
+	      <?php 
+		      if(!isLogged())  {
+			      echo "<li><a id='nav-login' href=\"login.php\"><button type=\"button\" class=\"btn btn-primary btn-xs\">Sign in</button></a></li>";
+			   }
+	      ?>
+
 	      <li><a href="#">About</a></li>
 	      <?php
-	      	if(isLogged())  {
+	      	if(isLogged()) {
 		       echo "<li class=\"dropdown\">
 		        <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">".$_SESSION['username']."<b class=\"caret\"></b></a>
 		        <ul class=\"dropdown-menu\">

@@ -1,5 +1,7 @@
 /**
- * Contains utility functions.
+ * A JS module containing commonly used utility functions.
+ * 
+ * @author V. Tsonev
  */
 var utils = utils|| {};
 /**
@@ -14,7 +16,6 @@ var utils = utils|| {};
  *            if set to true, the ajax loader will be appended to the content of
  *            the container, instead of clearing everything in it
  */
-// TODO: Load the gif with the page?
 utils.displayAjaxLoader = function(parentElementId, loadingPrompt, append) {
 	var loaderHtml = "<img id=\"ajax-loader\" src=\"images/ajax-loader.gif\"><br>"
 			+ loadingPrompt + "</img><br>";
@@ -58,9 +59,6 @@ utils.makeGetJsonRequest = function(url, handlerFunction) {
 		//REVIEW: maybe popup a CLS dialog with the error here
 		console.log("There was an error sending the request to the server");
 	})
-}
-
-utils.checkDisplayUserMenu = function() {
 }
 
 /**

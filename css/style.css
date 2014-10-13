@@ -99,6 +99,11 @@ footer #panel .panel-inner {
   background: rgba(255,255,255,0.10);
   width: 15%;
   padding: 32px;
+
+}
+
+.login-form button {
+  display: inline;
 }
 
 .msg-post-form {
@@ -171,7 +176,11 @@ footer #panel .panel-inner {
   margin-bottom: 24px;
 }
 
-.small-form input, button {
+.small-form input {
+  margin-top: 16px;
+}
+
+.small-form button {
   margin-top: 16px;
 }
 
