@@ -107,7 +107,7 @@ include 'lib/acc_functions.php';
                     var quantity = $("#quantity-picker").find(":selected").text();
                     addToCart(id, quantity);
                 });
-            })
+            });
         }
 
         /**

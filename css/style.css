@@ -21,7 +21,7 @@ body {
 }
 
 footer {
-    background: url('bg02.jpg') top center repeat-x;
+    background: url('../images/bg02.jpg') top center repeat-x;
     border-radius: 5px;
     padding: 20px 0;
     margin: 0 auto;

@@ -40,11 +40,11 @@ if ($requestMethod == "GET") {
         }
         //if the criteria is not empty, start building the query
         foreach ($criteria as $key => $value) {
-            //all search arguments have an 'OR' relation between them (if more than 1)
+            //all search arguments (like title, description, etc) have an 'AND' relation between them (if more than 1)
             if ($isFirst) {
                 $isFirst = false;
             } else {
-                $searchQuery.= " OR ";
+                $searchQuery.= " AND ";
             }
             $searchQuery.= $key . " LIKE '%" . mysqli_real_escape_string($dbConnection, $value) . "%'";
         }
