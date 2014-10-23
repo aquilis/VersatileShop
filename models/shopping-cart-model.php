@@ -1,6 +1,6 @@
 <?php
 
-include '../lib/db_functions.php';
+include '../lib/utils.php';
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();

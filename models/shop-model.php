@@ -1,5 +1,5 @@
 <?php
-include '../lib/db_functions.php';
+include '../lib/utils.php';
 
 //get the database connection
 $dbConnection = getVersatileShopDbConnection();
