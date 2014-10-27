@@ -94,13 +94,71 @@ footer #panel .panel-inner {
   float: left;
 }
 
-.login-form {
-  border-radius: 10px;
-  background: rgba(255,255,255,0.10);
-  width: 25%;
-  padding: 32px;
+/* big landscape tablets, laptops, and desktops */
+@media (min-width:1025px) {
+    .authentication-panel {
+        width: 50%;
+        background-image:url('../images/lined_paper.png');
+        background-repeat:repeat;
+    }
 
+    .login-form {
+        border-radius: 10px;
+        background: rgba(255,255,255,0.10);
+        padding: 32px;
+        width: 60%;
+    }
+
+    .result-panel {
+        margin-top: 32px;
+        width: 67%;
+    }
+
+    .result-panel-sml {
+        width: 600px;
+        display: none;
+        font-size: 18px;
+    }
+
+    .small-form {
+        width: 40%;
+        margin-bottom: 24px;
+    }
+    
+    .youtube-video {
+        width: 560px;
+        height: 315px;
+    }
+    
+    .input-sml {
+        width: 40%;
+    }
 }
+
+/* smartphones, Android phones, landscape iPhone */
+@media (min-width:480px) {
+    .authentication-panel {
+        background-image:url('../images/honey_im_subtle.png');
+        background-repeat:repeat;
+    }
+
+    .login-form {
+        margin: 16px;
+    }
+    .result-panel {
+        margin-top: 32px;
+    }
+
+    .result-panel-sml {
+        display: none;
+        font-size: 18px;
+    }
+
+    .small-form {
+        margin-bottom: 24px;
+    }
+}
+
 
 .login-form button {
   display: inline;
@@ -131,11 +189,6 @@ footer #panel .panel-inner {
   width: 67%;
 }
 
-.result-panel {
-  margin-top: 32px;
-  width: 67%;
-}
-
 #home-logo img {
   height: 50px;
 }
@@ -160,21 +213,10 @@ footer #panel .panel-inner {
   margin-right: 24px;
 }
 
-.result-panel-sml {
-  width: 600px;
-  display: none;
-  font-size: 18px;
-}
-
 /* usually used for the 'X' button in the upper-right corner for closing a window or for deleting a product */
 .close-delete-btn {
   float: right;
   cursor: pointer;
-}
-
-.small-form {
-  width: 40%;
-  margin-bottom: 24px;
 }
 
 .small-form input {
@@ -183,6 +225,10 @@ footer #panel .panel-inner {
 
 .small-form button {
   margin-top: 16px;
+}
+
+.hand-pointer {
+    cursor: pointer;
 }
 
 ul.ui-autocomplete.ui-menu {

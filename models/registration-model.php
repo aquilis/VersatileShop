@@ -9,9 +9,19 @@ $dbConnection = getVersatileShopDbConnection();
 $requestMethod = filter_input(INPUT_SERVER, "REQUEST_METHOD", FILTER_SANITIZE_STRING);
 
 if ($requestMethod == "POST") {
-    //The username and password are deliberately passed without any escaping or filtering
+    $userData = Array();
+    $userData["username"] = $_POST["username"];
+    $userData["password"] = $_POST["password"];
+    $userData["email"] = $_POST["email"];
+    $userData["firstName"] = $_POST["firstName"];
+    $userData["lastName"] = $_POST["lastName"];
+    $userData["town"] = $_POST["town"];
+    $userData["zipCode"] = $_POST["zipCode"];
+    $userData["address"] = $_POST["address"];
+    $userData["phone"] = $_POST["phone"];
+    //The user data is deliberately passed without any escaping or filtering
     //in order for the validation to detect them.
-    $validationResult = validateRegistration($_POST["username"], $_POST["password"], $_POST["email"], $dbConnection);
+    $validationResult = validateRegistration($userData, $dbConnection);
     //if the validation has failed, return the status and error and terminate the function.
     if ($validationResult["status"] == false) {
         header('Content-Type: application/json');
@@ -23,7 +33,7 @@ if ($requestMethod == "POST") {
     $password = htmlspecialchars($_POST["password"], ENT_QUOTES);
     $email = htmlspecialchars($_POST["email"], ENT_QUOTES);
     //create the new account and return the response
-    $queryResult = createAccount($username, $password, $email, $dbConnection);
+    $queryResult = createAccount($userData, $dbConnection);
     header('Content-Type: application/json');
     echo json_encode($queryResult);
 }
@@ -32,27 +42,35 @@ if ($requestMethod == "POST") {
  * Validates the length, content of the username/password and the uniqueness of the username in
  * the database.
  * 
- * @param type $username is the username
- * @param type $pass is the password
- * @param type $dbConnection is the database connection
+ * @param $userData is an associative array containing all user data
+ * @param $dbConnection is the database connection
  * @return a response object with a boolean status field and a messages field
  */
-function validateRegistration($username, $pass, $email, $dbConnection) {
+function validateRegistration($userData, $dbConnection) {
+    $username = $userData["username"];
+    $pass = $userData["password"];
+    $email = $userData["email"];
+    $firstName = $userData["firstName"];
+    $lastName = $userData["lastName"];
+    $town = $userData["town"];
+    $zipCode = $userData["zipCode"];
+    $address = $userData["address"];
+    $phone = $userData["phone"];
     $isValid = true;
     $validationMessage = "";
     //validate the username using a regex pattern
     if (!preg_match('/^[a-zA-Z0-9]{5,15}$/', $username)) {
-        $validationMessage .= "Username must contain only latin letters or numbers, no spaces and be between 5 and 15 characters long.".PHP_EOL;
+        $validationMessage .= "Username must contain only latin letters or numbers, no spaces and be between 5 and 15 characters long." . PHP_EOL;
         $isValid = false;
     }
     //validate the password using a regex pattern
     if (!preg_match('/^[a-zA-Z0-9]{6,20}$/', $pass)) {
-        $validationMessage .= "Password must contain only latin letters or numbers, no spaces and be between 6 and 20 characters long.".PHP_EOL;
+        $validationMessage .= "Password must contain only latin letters or numbers, no spaces and be between 6 and 20 characters long." . PHP_EOL;
         $isValid = false;
     }
     //validate the email using a regex pattern
     if (!preg_match('/^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}$/', $email)) {
-        $validationMessage.= "Invalid e-mail format.".PHP_EOL;
+        $validationMessage.= "Invalid e-mail format." . PHP_EOL;
         $isValid = false;
     }
     //check if the username already exists in the DB, if it's valid so far
@@ -60,38 +78,74 @@ function validateRegistration($username, $pass, $email, $dbConnection) {
         $usernameQuery = mysqli_query($dbConnection, "SELECT username FROM users WHERE username = '" .
                 mysqli_real_escape_string($dbConnection, $username) . "' LIMIT 1");
         if (mysqli_num_rows($usernameQuery) > 0) {
-            $validationMessage .= "That username is already taken by another user.";
+            $validationMessage .= "That username is already taken by another user." . PHP_EOL;
             $isValid = false;
         }
         $emailQuery = mysqli_query($dbConnection, "SELECT email FROM users WHERE email = '" .
                 mysqli_real_escape_string($dbConnection, $email) . "' LIMIT 1");
         if (mysqli_num_rows($emailQuery) > 0) {
-            $validationMessage .= "That e-mail is already in use by another user.";
+            $validationMessage .= "That e-mail is already in use by another user." . PHP_EOL;
             $isValid = false;
         }
+    }
+    //Yes, here should NOT be any 'else'
+    //if the mandatory details are not valid, don't validate the additional
+    if (!$isValid) {
+        $response = array();
+        $response["status"] = $isValid;
+        $response["message"] = $validationMessage;
+        $response["errorInMandatoryFields"] = true;
+        return $response;
+    }
+    //validate the first name using a regex pattern
+    if ((isset($firstName)) && (!preg_match('/^([a-zA-Z\s]){0,50}$/', $firstName))) {
+        $validationMessage.= "First name can contain only latin letters, spaces and can be no more than 50 characters long." . PHP_EOL;
+        $isValid = false;
+    }
+    //validate the last name using a regex pattern
+    if ((isset($lastName)) && (!preg_match('/^([a-zA-Z\s]){0,50}$/', $lastName))) {
+        $validationMessage.= "Last name can contain only latin letters, spaces and can be no more than 50 characters long." . PHP_EOL;
+        $isValid = false;
+    }
+    //validate the town using a regex pattern
+    if ((isset($town)) && (!preg_match('/^([a-zA-Z\s]){0,50}$/', $town))) {
+        $validationMessage.= "Town can contain only latin letters, spaces and can be no more than 50 characters long." . PHP_EOL;
+        $isValid = false;
+    }
+    //validate the zip code using a regex pattern
+    if ((isset($zipCode)) && (!preg_match('/^([a-zA-Z0-9\s\-]){0,12}$/', $zipCode))) {
+        $validationMessage.= "ZIP code can contain only numbers, latin letters, spaces, dashes and can be no more than 12 characters long." . PHP_EOL;
+        $isValid = false;
+    }
+    //validate the address using a regex pattern
+    if ((isset($address)) && (!preg_match('/^([a-zA-Z0-9\s\_\-\,\.]){0,70}$/', $address))) {
+        $validationMessage.= "Address must not contain special characters, except ,.-_ and can be no more than 70 characters long." . PHP_EOL;
+        $isValid = false;
+    }
+    //validate the phone using a regex pattern
+    if ((isset($phone)) && (!preg_match('/^([0-9+]){0,20}$/', $phone))) {
+        $validationMessage.= "Phone number can contain only digits, '+' sign and can be no more than 20 characters long." . PHP_EOL;
+        $isValid = false;
     }
     $response = array();
     $response["status"] = $isValid;
     $response["message"] = $validationMessage;
+    $response["errorInMandatoryFields"] = false;
     return $response;
 }
 
 /**
  * Creates a new account in the DB with the given username and password, supposing they are already validated.
  * 
- * @param $username is the username
- * @param $pass is the password
- * @param $email is the email
- * @param type $dbConnection is the database connection
+ * @param $userData is an associative array containing all user data
+ * @param $dbConnection is the database connection
  * @return a response object with a boolean status field and a messages field
  */
-function createAccount($username, $pass, $email, $dbConnection) {
+function createAccount($userData, $dbConnection) {
     if (isLogged()) {
         logOut();
     }
-    $query = "INSERT INTO users (username, password, email)
-            VALUES ('" . mysqli_real_escape_string($dbConnection, $username) .
-            "', '" . hashPassword($pass, SALT1, SALT2) ."', '". mysqli_real_escape_string($dbConnection, $email)."')";
+    $query = buildCreateUserSqlQuery($userData, $dbConnection);
     $queryResult = mysqli_query($dbConnection, $query);
     $result = array();
     if ($queryResult) {
@@ -102,6 +156,62 @@ function createAccount($username, $pass, $email, $dbConnection) {
         $result["message"] = "Invalid query: " . mysql_error($dbConnection);
     }
     return $result;
+}
+
+/**
+ * Builds the SQL query for inserting the given validated data for the new user into the database.
+ * 
+ * @param $userData is an associative array containing all user data
+ * @param type $dbConnection is the database connection
+ * @return the SQL query
+ */
+function buildCreateUserSqlQuery($userData, $dbConnection) {
+    $username = $userData["username"];
+    $pass = $userData["password"];
+    $email = $userData["email"];
+    $firstName = $userData["firstName"];
+    $lastName = $userData["lastName"];
+    $town = $userData["town"];
+    $zipCode = $userData["zipCode"];
+    $address = $userData["address"];
+    $phone = $userData["phone"];
+
+    //first put the mandatory details into the query
+    $fields = "(username, password, email";
+    $values = "('" . mysqli_real_escape_string($dbConnection, $username) . "', '" .
+            hashPassword($pass, SALT1, SALT2) . "', '" .
+            mysqli_real_escape_string($dbConnection, $email) . "'";
+
+    //check if any of the additional details is set and append it to the query
+    //NOTE: iterating over the $userData and putting its key => values directly into the query has vulnerabilites and is avoided
+    if (isset($firstName)) {
+        $fields.= ", firstName";
+        $values.= ", '" . mysqli_real_escape_string($dbConnection, $firstName) . "'";
+    }
+    if (isset($lastName)) {
+        $fields.= ", lastName";
+        $values.= ", '" . mysqli_real_escape_string($dbConnection, $lastName) . "'";
+    }
+    if (isset($town)) {
+        $fields.= ", town";
+        $values.= ", '" . mysqli_real_escape_string($dbConnection, $town) . "'";
+    }
+    if (isset($zipCode)) {
+        $fields.= ", zipCode";
+        $values.= ", '" . mysqli_real_escape_string($dbConnection, $zipCode) . "'";
+    }
+    if (isset($address)) {
+        $fields.= ", address";
+        $values.= ", '" . mysqli_real_escape_string($dbConnection, $address) . "'";
+    }
+    if (isset($phone)) {
+        $fields.= ", phone";
+        $values.= ", '" . mysqli_real_escape_string($dbConnection, $phone) . "'";
+    }
+    $fields .= ")";
+    $values.= ")";
+    $query = "INSERT INTO users " . $fields . " VALUES " . $values . ";";
+    return $query;
 }
 
 ?>

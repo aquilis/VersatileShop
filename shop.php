@@ -197,7 +197,7 @@ include 'lib/acc_functions.php';
             var html = "";
             $(videosArray).each(function (index, element) {
                 html += element.videoCaption +
-                        "</br><iframe class=\"product-section\" width=\"560\" height=\"315\" src=\"" + element.videoSrc + "\" frameborder=\"0\" allowfullscreen></iframe></br>";
+                        "</br><iframe class=\"product-section youtube-video\"  src=\"" + element.videoSrc + "\" frameborder=\"0\" allowfullscreen></iframe></br>";
             });
             return html;
         }

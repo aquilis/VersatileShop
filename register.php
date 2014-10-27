@@ -14,19 +14,31 @@ include 'lib/acc_functions.php';
                 /**
                  * Validates the user details from the registration form.
                  * 
-                 * @param username is the username
-                 * @param password is the password
-                 * @param email is the email
+                 * @param userDetails 
+                 *                  is an object containing all user details 
+                 *                  from the form
+                 * 
                  * @returns a result object with a status and message fields
                  */
-                function validateRegistration(username, password, email) {
+                function validateRegistration(userDetails) {
+                    var username = userDetails.username;
+                    var password = userDetails.password;
+                    var email = userDetails.email;
+                    var firstName = userDetails.firstName;
+                    var lastName = userDetails.lastName;
+                    var town = userDetails.town;
+                    var zipCode = userDetails.zipCode;
+                    var address = userDetails.address;
+                    var phone = userDetails.phone;
+ 
                     var isValid = true;
                     var validationMessage = "";
                     //first, check if any of the fields is empty
                     if ((username.length === 0) || (password.length === 0) || (email.length === 0)) {
                         return {
                             status: false,
-                            message: "Please, fill in the mandatory fields."
+                            message: "Please, fill in the mandatory fields.",
+                            errorInMandatoryFields: true
                         };
                     }
                     //validate the username using a regex pattern
@@ -44,9 +56,48 @@ include 'lib/acc_functions.php';
                         validationMessage += "Invalid e-mail format.\n";
                         isValid = false;
                     }
+                    //if the mandatory details are not valid, don't validate the additional
+                    if(!isValid) {
+                        return {
+                            status: isValid,
+                            message: validationMessage,
+                            errorInMandatoryFields: true
+                        };
+                    }
+                    //validate the first name using a regex pattern
+                    if ((typeof(firstName)!=="undefined") && (firstName.length > 0) && (!firstName.match(/^([a-zA-Z\s]){0,50}$/))) {
+                        validationMessage += "First name can contain only latin letters, spaces and can be no more than 50 characters long.\n";
+                        isValid = false;
+                    }
+                    //validate the last name using a regex pattern
+                    if ((typeof(lastName)!=="undefined") && (lastName.length > 0) && (!lastName.match(/^([a-zA-Z\s]){0,50}$/))) {
+                        validationMessage += "Last name can contain only latin letters, spaces and can be no more than 50 characters long.\n";
+                        isValid = false;
+                    }
+                    //validate the town using a regex pattern
+                    if ((typeof(town)!=="undefined") && (town.length > 0) && (!town.match(/^([a-zA-Z\s]){0,50}$/))) {
+                        validationMessage += "Town can contain only latin letters, spaces and can be no more than 50 characters long.\n";
+                        isValid = false;
+                    }
+                    //validate the zip code using a regex pattern
+                    if ((typeof(zipCode)!=="undefined") && (zipCode.length > 0) && (!zipCode.match(/^([a-zA-Z0-9\s\-]){0,12}$/))) {
+                        validationMessage += "ZIP code can contain only numbers, latin letters, spaces, dashes and can be no more than 12 characters long.\n";
+                        isValid = false;
+                    }
+                    //validate the address using a regex pattern
+                    if ((typeof(address)!=="undefined") && (address.length > 0) && (!address.match(/^([a-zA-Z0-9\s\_\-\,\.]){0,70}$/))) {
+                        validationMessage += "Address must not contain special characters, except ,.-_ and can be no more than 70 characters long.\n";
+                        isValid = false;
+                    }
+                     //validate the phone using a regex pattern
+                    if ((typeof(phone)!=="undefined") && (phone.length > 0) && (!phone.match(/^([0-9+]){0,20}$/))) {
+                        validationMessage += "Phone number can contain only digits, '+' sign and can be no more than 20 characters long.\n";
+                        isValid = false;
+                    }
                     return {
-                        status: isValid,
-                        message: validationMessage
+                            status: isValid,
+                            message: validationMessage,
+                            errorInMandatoryFields: false
                     };
                 }
 
@@ -65,23 +116,39 @@ include 'lib/acc_functions.php';
                             errors + "</div>";
                     var resultPanel = $("#result-panel");
                     resultPanel.html(html);
-                    $(".login-form").addClass("has-error");
+                    //scroll  to top of page, so that the user can see the errors
+                    window.scrollTo(0,0);
+                    if(typeof(validationResult.errorInMandatoryFields)!=="undefined" && validationResult.errorInMandatoryFields===true) {
+                        $(".mandatory-details").addClass("has-error");
+                        $(".additional-details").removeClass("has-error");
+                    } else {
+                        $(".additional-details").addClass("has-error");
+                        $(".mandatory-details").removeClass("has-error");
+                    }  
                 }
 
                 /**
                  * Attaches a click handler to the register button
                  */
                 $("#register-btn").click(function () {
-                    var username = $("#username-field").val();
-                    var password = $("#password-field").val();
-                    var email = $("#email-field").val();
-                    var validationResult = validateRegistration(username, password, email);
+                    var userDetails = {
+                        username: $("#username-field").val(),
+                        password: $("#password-field").val(),
+                        email: $("#email-field").val(),
+                        firstName: $("#first-name-field").val(),
+                        lastName: $("#last-name-field").val(),
+                        town: $("#town-field").val(),
+                        zipCode: $("#zip-field").val(),
+                        address: $("#address-field").val(),
+                        phone: $("#phone-field").val()
+                    };
+                    var validationResult = validateRegistration(userDetails);
                     if (validationResult.status === false) {
                         highlightErrors(validationResult);
                         return;
                     }
-                    //make the post request
-                    $.post("models/registration-model.php", {username: username, password: password, email: email}).done(function (data) {
+                    //if the front-end validation passes, make the post request to the server
+                    $.post("models/registration-model.php", userDetails).done(function (data) {
                         var serverValidationResult = data;
                         if (serverValidationResult.status === false) {
                             highlightErrors(serverValidationResult);
@@ -93,6 +160,7 @@ include 'lib/acc_functions.php';
                         var resultPanel = $("#result-panel");
                         resultPanel.fadeIn("fast");
                         resultPanel.html(html);
+                        window.scrollTo(0,0);
                         resultPanel.delay(4000).fadeOut(1200, function () {
                             window.location.href = utils.getBaseURL() + "/login.php";
                         });
@@ -107,21 +175,42 @@ include 'lib/acc_functions.php';
 
         <div id="mainColumn">
             <div id="contentArea">
-                <h1>Register a new user</h1>
-                <div class="panel panel-primary">
+                <h1><span class="glyphicon glyphicon-user"></span> Register a new user</h1>
+                <p>Fields with * are mandatory</p>
+                <div class="panel panel-primary authentication-panel">
                     <div id="result-panel"></div>
                     <div class="form-group login-form">
-                        <label>Username*</label>
-                        <input id="username-field" class="form-control" type="text" placeholder="Username"><br>
-                        <label>E-mail*</label>
-                        <input id="email-field" class="form-control" type="text" placeholder="Email"><br>
-                        <label>Password*</label>
-                        <input id="password-field" class="form-control" type="password" placeholder="Password">
+                        <div class="mandatory-details">
+                            <label>Username*</label>
+                            <input id="username-field" class="form-control" type="text" placeholder="Username"><br>
+                            <label>E-mail*</label>
+                            <input id="email-field" class="form-control" type="text" placeholder="Email"><br>
+                            <label>Password*</label>
+                            <input id="password-field" class="form-control" type="password" placeholder="Password">
+                        </div>
+                        <hr>
+                        <h5>Additional user details (not mandatory, but recommended)</h5>
+                        <div class="additional-details">
+                            <label>First name</label>
+                            <input id="first-name-field" class="form-control" type="text" placeholder="First name"><br>
+                            <label>Last name</label>
+                            <input id="last-name-field" class="form-control" type="text" placeholder="Last name"><br>
+                            <label>Town</label>
+                            <input id="town-field" class="form-control input-sml" type="text" placeholder="Town"><br>
+                            <label>ZIP (Postal) code</label>
+                            <input id="zip-field" class="form-control input-sml" type="text" placeholder="ZIP (Postal) code"><br>
+                            <label>Address</label>
+                            <input id="address-field" class="form-control" type="text" placeholder="Address"><br>
+                            <label>Phone</label>
+                            <input id="phone-field" class="form-control" type="text" placeholder="Phone">
+                        </div>
                         <button id="register-btn" type="button" class="btn btn-primary">Register</button>
                     </div>
+
                 </div>
             </div>
         </div>
+        <?php include_once("templates/footer.php"); ?>
     </body>
 
 </html>

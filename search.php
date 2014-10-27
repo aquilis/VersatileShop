@@ -58,7 +58,6 @@ include 'lib/acc_functions.php';
                     });
                 }
 
-
                 /**
                  *  Attaches a click handler to the search button and builds the search criteria.
                  **/

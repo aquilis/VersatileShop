@@ -4,14 +4,16 @@
  * A moduile containing common utility functions used all across the system
  */
 
-
 /**
  * Gets the connection to the Versatile shop's database.
  * 
  * @return the connection object to the db_versatile_shop
  */
+//TODO: move the host name, database name, user/pass in a config file
 function getVersatileShopDbConnection() {
-    $con = mysqli_connect("localhost", "root", "", "db_versatile_shop");
+    //opens a persistent connection to the database, to prevent reconnecting each time
+    //this method is invoked
+    $con = mysqli_connect("p:localhost", "root", "", "db_versatile_shop");
     if (mysqli_connect_errno()) {
         echo "Failed to connect to MySQL: " . mysqli_connect_error();
     }
@@ -81,19 +83,11 @@ function logOut() {
  * Checks if the given username is an admin.
  * */
 function isAdmin($username) {
-    $con = mysqli_connect("localhost", "root", "", "db_versatile_shop");
-    if (mysqli_connect_errno()) {
-        echo "Failed to connect to MySQL: " . mysqli_connect_error();
-    }
-    $sql = "SELECT userID FROM admins WHERE userID = (SELECT userID from users where username = '" . mysqli_real_escape_string($con, $username) . "') LIMIT 1";
+    $con = getVersatileShopDbConnection();
+    $sql = "SELECT userID FROM admins WHERE userID = (SELECT userID from users where username = '" .
+            mysqli_real_escape_string($con, $username) . "') LIMIT 1";
     $query = mysqli_query($con, $sql) or trigger_error("Query Failed: " . mysql_error());
-    if (mysqli_num_rows($query) == 1) {
-        mysqli_close($con);
-        return true;
-    } else {
-        mysqli_close($con);
-        return false;
-    }
+    return mysqli_num_rows($query) == 1;
 }
 
 /**
@@ -101,14 +95,11 @@ function isAdmin($username) {
  * TODO: Move this to the login model, when ready
  * */
 function validateLogin($username, $pass) {
-    //connect to the 'login' DB
-    $con = mysqli_connect("localhost", "root", "", "db_versatile_shop");
-    if (mysqli_connect_errno()) {
-        echo "Failed to connect to MySQL: " . mysqli_connect_error();
-    }
+    $con = getVersatileShopDbConnection();
     // See if the username and password are valid. 
     $sql = "SELECT username FROM users  
-			WHERE username = '" . mysqli_real_escape_string($con, $username) . "' AND password = '" . hashPassword($pass, SALT1, SALT2) . "' LIMIT 1";
+            WHERE username = '" . mysqli_real_escape_string($con, $username) .
+            "' AND password = '" . hashPassword($pass, SALT1, SALT2) . "' LIMIT 1";
     $query = mysqli_query($con, $sql) or trigger_error("Query Failed: " . mysql_error());
     if (mysqli_num_rows($query) == 1) {
         mysqli_close($con);
