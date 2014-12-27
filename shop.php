@@ -3,7 +3,6 @@ include 'lib/acc_functions.php';
 ?>
 <html>
     <head>
-    <a href="models/shop-model.php"></a>
     <title>Shop</title>
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
@@ -28,7 +27,7 @@ include 'lib/acc_functions.php';
          * Displays all available products in a bootstrap grid.
          **/
         function displayAllProducts() {
-            $.getJSON("models/shop-model.php", function (data) {
+            $.getJSON("services/ShopService.php", function (data) {
                 var itemsHtml = "";
                 $(data).each(function (index, element) {
                     itemsHtml +=
@@ -66,7 +65,7 @@ include 'lib/acc_functions.php';
             $("body").removeClass("paper-textured");
             $("body").addClass("carbon-textured");
             utils.displayAjaxLoader("contentArea", "Loading...", false);
-            $.getJSON("models/shop-model.php?productID=" + productID, function (data) {
+            $.getJSON("services/ShopService.php?productID=" + productID, function (data) {
                 var html = "";
                 if (data.length === 0) {
                     html = "<img src='images/404.png' alt='Oops! No such page'></img>";
@@ -170,7 +169,7 @@ include 'lib/acc_functions.php';
          *                  is the quantity for the product
          */
         function addToCart(productID, quantity) {
-            $.post("models/shopping-cart-model.php", {productID: productID, quantity: quantity}, function () {
+            $.post("services/ShoppingCartService.php", {productID: productID, quantity: quantity}, function () {
             }).done(function (data) {
                             var html = "<div class=\"alert alert-success\" role=\"alert\"><span class=\"glyphicon glyphicon-ok\"></span>   " + data + "</div>";
                     var resulPanel = $("#shopping-cart-result");

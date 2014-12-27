@@ -148,7 +148,7 @@ include 'lib/acc_functions.php';
                         return;
                     }
                     //if the front-end validation passes, make the post request to the server
-                    $.post("models/registration-model.php", userDetails).done(function (data) {
+                    $.post("services/RegistrationService.php", userDetails).done(function (data) {
                         var serverValidationResult = data;
                         if (serverValidationResult.status === false) {
                             highlightErrors(serverValidationResult);

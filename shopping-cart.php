@@ -24,7 +24,7 @@ include 'lib/acc_functions.php';
              **/
             function loadShoppingCart() {
                 utils.displayAjaxLoader("items-area", "Loading...", false);
-                $.getJSON("models/shopping-cart-model.php", function (data) {
+                $.getJSON("services/ShoppingCartService.php", function (data) {
                     var itemsHtml = "";
                     var totalSum = 0;
                     var hasProducts = false;
@@ -61,7 +61,7 @@ include 'lib/acc_functions.php';
                         //attach a click handler to the empty cart button
                         $("#empty-cart-btn").click(function () {
                             $.ajax({
-                                url: "models/shopping-cart-model.php",
+                                url: "services/ShoppingCartService.php",
                                 type: "DELETE",
                             }).done(function (msg) {
                                 loadShoppingCart();
@@ -78,7 +78,7 @@ include 'lib/acc_functions.php';
                     $(".remove-from-cart-btn").click(function () {
                         var productID = $(this).attr("productID");
                         $.ajax({
-                            url: "models/shopping-cart-model.php?productID=" + productID,
+                            url: "services/ShoppingCartService.php?productID=" + productID,
                             type: "DELETE",
                         }).done(function (msg) {
                             //reload the shopping cart after deleting a product

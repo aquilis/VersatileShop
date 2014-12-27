@@ -26,7 +26,7 @@ include 'lib/acc_functions.php';
                         queryParams += "&" + element.property + "=" + element.value;
                     });
                     //make the get request and display the result
-                    $.getJSON("models/search-model.php?action=search" + queryParams, function (data) {
+                    $.getJSON("services/SearchService.php?action=search" + queryParams, function (data) {
                         var itemsHtml = "";
                         if (data.length === 0) {
                             itemsHtml = "<h4>No results were found for the given criteria... :(</h4>";
@@ -76,7 +76,7 @@ include 'lib/acc_functions.php';
                 /**
                  *  Loads all product titles for the autocomplete.
                  **/
-                $.getJSON("models/search-model.php?action=allTitles", function (data) {
+                $.getJSON("services/SearchService.php?action=allTitles", function (data) {
                     $("#search-by-title").autocomplete({
                         source: data,
                         select: function (event, ui) {
