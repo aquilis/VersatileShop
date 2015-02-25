@@ -30,6 +30,19 @@ function returnEmptyJsonArray() {
     echo json_encode(array());
 }
 
+function startsWith($haystack, $needle) {
+     $length = strlen($needle);
+     return (substr($haystack, 0, $length) === $needle);
+}
+
+function endsWith($haystack, $needle) {
+    $length = strlen($needle);
+    if ($length == 0) {
+        return true;
+    }
+    return (substr($haystack, -$length) === $needle);
+}
+
 /*
   password salts are used to ensure a secure password
   hash and make your passwords much harder to be broken into

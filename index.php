@@ -13,6 +13,7 @@ if (isset($_GET['action'])) {
 <html>
     <head>
         <title>Versatile shop</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link href="css/bootstrap.css" rel="stylesheet">
         <link href="css/style.css" rel="stylesheet">
         <script src="js/jquery-1.11.0.min.js"></script>
@@ -29,7 +30,7 @@ if (isset($_GET['action'])) {
         <?php include_once("templates/header.php"); ?>
         <div id="mainColumn">
             <div class="carousel-holder">
-                <h3 style="text-align:center">Order GTA V for PS/Xbox now and you gain a 15% discount!</h3>
+                <h3 style="text-align:center">Order GTA V for PS/Xbox now and you gain a 15% discount!<h3>
 
                 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
                     <!-- Indicators -->

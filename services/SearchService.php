@@ -1,8 +1,12 @@
 <?php
 include '../lib/utils.php';
+include "/dataAccessObjects/ProductDAO.php";
 
 //get the database connection
 $dbConnection = getVersatileShopDbConnection();
+
+$productDAO = new ProductDAO("products");
+
 
 //avoid special characters and sql injection
 $requestMethod = filter_input(INPUT_SERVER, "REQUEST_METHOD", FILTER_SANITIZE_STRING);

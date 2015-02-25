@@ -17,9 +17,9 @@ define('SALT2', '^&@#_-=+Afda$#%');
 /**
  * 	Escapes all shell arguments and Html tags from the string. Use always when storing user inputs into the DB!!!
  * */
-function escapeShellAndHtml($rawString) {
-    return htmlspecialchars($rawString, ENT_QUOTES);
-}
+// function escapeShellAndHtml($rawString) {
+//     return htmlspecialchars($rawString, ENT_QUOTES);
+// }
 
 /* * *
   Creates a SHA1 and MD5 hash of the password
