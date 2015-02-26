@@ -9,10 +9,13 @@ include_once 'VideosDAO.php';
  *  @author Vilizar Tsonev
  * 
  * */
-class productDAO extends BaseDAO {
+class ProductDAO extends BaseDAO {
 
 	/** The length of the product description portion that will be shown in the header **/
-	const HEADER_DESCRIPTION_LENGTH = 220;
+	const HEADER_DESCRIPTION_LENGTH = 350;
+
+	/** The criteria fields that will be searched using 'contains' (non-exact) matching **/
+	private $searchFieldsNonExactMatch;
 
 	private $imagesDAO;
 
@@ -22,26 +25,17 @@ class productDAO extends BaseDAO {
        parent::__construct($dataTable);
        $this->imagesDAO = new ImagesDAO("images");
        $this->videosDAO = new VideosDAO("videos");
+       $this->searchFieldsNonExactMatch = array("title", "description");
    }
 
 	/**
 	*	Gets all products headers (the most basic, shortened information only)
 	**/
 	public function getProductHeaders() {
-		$query = "SELECT productID, title, SUBSTRING(description,1,".self::HEADER_DESCRIPTION_LENGTH."), price, thumbnailPath".
-				" FROM ". $this->dataTable ." WHERE available = '1' order by dateAdded desc";
-        $result = mysqli_query($this->dbConnection, $query);
-        $data = array();
-        $rowArray = array();
-        //fetch_assoc can not be used here, because the substring clause screws it up
-        while ($row = mysqli_fetch_array($result, MYSQL_NUM)) {
-            $rowArray['productID'] = $row[0];
-            $rowArray['title'] = $row[1];
-            $rowArray['description'] = $row[2];
-            $rowArray['price'] = $row[3];
-            $rowArray['thumbnailPath'] = $row[4];
-            array_push($data, $rowArray);
-        }
+		$fields = array("productID", "title", "description", "price", "thumbnailPath");
+		$criteria = array("available" => "1");
+		$data = $this->getByCriteria($fields, $criteria, "dateAdded", "DESC");
+		$this->shortenProductDescriptions($data);
         return $data;
 	}
 
@@ -68,6 +62,45 @@ class productDAO extends BaseDAO {
 		$product["images"] = $images;
 		$product["videos"] = $videos;
 		return $product;
+	}
+
+
+	/**
+    *  Searches for products according to the given criteria. If non-exact matching is needed for certain fields, they
+    *  have to be added to the class member - searchFieldsNonExactMatch array
+    *
+    *   @param criteria - is an associative array, where the keys are the column names 
+    *                     and the values are their expected values to match the criteria.
+    **/
+	public function search($criteria) {
+		foreach ($criteria as $key => &$value) {
+			if(in_array($key, $this->searchFieldsNonExactMatch)) {
+				$value = "*". $value ."*";
+			}
+		}
+		$fields = array("productID", "title", "description", "price", "thumbnailPath");
+		$criteria["available"] = "1";
+		$data = $this->getByCriteria($fields, $criteria, "dateAdded", "DESC");
+		$this->shortenProductDescriptions($data);
+        return $data;
+	}
+
+	/**
+	*	Gets all titles of all available products.
+	**/
+	public function getAllProductTitles() {
+		return $this->getByCriteria(array("title"), array("available" => "1"), "", "");
+	}
+
+	/****** PRIVATE METHODS ******/
+
+	/**
+	*	Shortens the products description, trimming them and keeping only the first HEADER_DESCRIPTION_LENGTH characters.
+	**/
+	private function shortenProductDescriptions(&$products) {
+		foreach ($products as &$value) {
+			$value["description"] = substr($value["description"], 0, self::HEADER_DESCRIPTION_LENGTH);
+		}
 	}
 }
 ?>

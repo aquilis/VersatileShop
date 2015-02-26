@@ -172,10 +172,10 @@ abstract class BaseDAO {
             $searchQuery.= " order by ". mysqli_real_escape_string($this->dbConnection, $orderByColumn) .
                             " ". mysqli_real_escape_string($this->dbConnection, $orderDirection);
         }
-        $result = mysqli_query($this->dbConnection, $searchQuery);
+        $result = mysqli_query($this->dbConnection, $searchQuery) or trigger_error("Query Failed: " . mysql_error());
         $data = array();
         $rowArray = array();
-         while ($row = mysqli_fetch_assoc($result)) {
+        while ($row = mysqli_fetch_assoc($result)) {
             array_push($data, $row);
         }
         return $data;
