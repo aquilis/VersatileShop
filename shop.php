@@ -212,7 +212,7 @@ include 'lib/acc_functions.php';
             <?php
             if (isset($_SESSION['isAdmin'])) {
                 ?>
-                <button type="button" class="btn btn-lg btn-info"><span class="glyphicon glyphicon-plus"></span>Add product</button>
+                <a href="productAddEdit.php"><button type="button" class="btn btn-lg btn-info"><span class="glyphicon glyphicon-plus"></span>Add product</button></a>
                 <?php
             }
             ?>

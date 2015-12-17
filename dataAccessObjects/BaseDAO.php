@@ -45,6 +45,11 @@ abstract class BaseDAO {
         $values.= ")";
         $sqlQuery = "INSERT INTO ". $this->dataTable ." ". $fields ." VALUES ". $values . ";";
         mysqli_query($this->dbConnection, $sqlQuery) or trigger_error("Query Failed: " . mysql_error());
+        //get the auto-generated ID and return it (used to later insert items in the foreign key-connected tables)
+        $getGeneratedIdQuery = "SELECT LAST_INSERT_ID();";
+        $result = mysqli_query($this->dbConnection, $getGeneratedIdQuery) or trigger_error("Query Failed: " . mysql_error());
+        $row = mysqli_fetch_assoc($result);
+        return $row['LAST_INSERT_ID()'];
     }
 
     /**
