@@ -223,7 +223,7 @@ include 'lib/acc_functions.php';
             }
             ?>
             <h1><span i18n_label="shop.page.caption"></span></h1>
-            <div id="items-area" class="row">			
+            <div id="items-area" class="row">           
             </div>
         </div> 
     </div>
