@@ -8,6 +8,9 @@ $dbConnection = getVersatileShopDbConnection();
 //avoid special characters and sql injection
 $requestMethod = filter_input(INPUT_SERVER, "REQUEST_METHOD", FILTER_SANITIZE_STRING);
 
+//messages keyset from the resource bundle
+
+
 if ($requestMethod == "POST") {
     $userData = Array();
     $userData["username"] = $_POST["username"];
@@ -60,17 +63,17 @@ function validateRegistration($userData, $dbConnection) {
     $validationMessage = "";
     //validate the username using a regex pattern
     if (!preg_match('/^[a-zA-Z0-9]{5,15}$/', $username)) {
-        $validationMessage .= "Username must contain only latin letters or numbers, no spaces and be between 5 and 15 characters long." . PHP_EOL;
+        $validationMessage .= "username.registration.fail" . PHP_EOL;
         $isValid = false;
     }
     //validate the password using a regex pattern
     if (!preg_match('/^[a-zA-Z0-9]{6,20}$/', $pass)) {
-        $validationMessage .= "Password must contain only latin letters or numbers, no spaces and be between 6 and 20 characters long." . PHP_EOL;
+        $validationMessage .= "password.registration.fail" . PHP_EOL;
         $isValid = false;
     }
     //validate the email using a regex pattern
     if (!preg_match('/^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}$/', $email)) {
-        $validationMessage.= "Invalid e-mail format." . PHP_EOL;
+        $validationMessage.= "email.registration.fail" . PHP_EOL;
         $isValid = false;
     }
     //check if the username already exists in the DB, if it's valid so far
@@ -78,13 +81,13 @@ function validateRegistration($userData, $dbConnection) {
         $usernameQuery = mysqli_query($dbConnection, "SELECT username FROM users WHERE username = '" .
                 mysqli_real_escape_string($dbConnection, $username) . "' LIMIT 1");
         if (mysqli_num_rows($usernameQuery) > 0) {
-            $validationMessage .= "That username is already taken by another user." . PHP_EOL;
+            $validationMessage .= "username.already.used" . PHP_EOL;
             $isValid = false;
         }
         $emailQuery = mysqli_query($dbConnection, "SELECT email FROM users WHERE email = '" .
                 mysqli_real_escape_string($dbConnection, $email) . "' LIMIT 1");
         if (mysqli_num_rows($emailQuery) > 0) {
-            $validationMessage .= "That e-mail is already in use by another user." . PHP_EOL;
+            $validationMessage .= "email.already.used" . PHP_EOL;
             $isValid = false;
         }
     }
@@ -99,32 +102,32 @@ function validateRegistration($userData, $dbConnection) {
     }
     //validate the first name using a regex pattern
     if ((isset($firstName)) && (!preg_match('/^([a-zA-Z\s]){0,50}$/', $firstName))) {
-        $validationMessage.= "First name can contain only latin letters, spaces and can be no more than 50 characters long." . PHP_EOL;
+        $validationMessage.= "first.name.registration.fail" . PHP_EOL;
         $isValid = false;
     }
     //validate the last name using a regex pattern
     if ((isset($lastName)) && (!preg_match('/^([a-zA-Z\s]){0,50}$/', $lastName))) {
-        $validationMessage.= "Last name can contain only latin letters, spaces and can be no more than 50 characters long." . PHP_EOL;
+        $validationMessage.= "last.name.registration.fail" . PHP_EOL;
         $isValid = false;
     }
     //validate the town using a regex pattern
     if ((isset($town)) && (!preg_match('/^([a-zA-Z\s]){0,50}$/', $town))) {
-        $validationMessage.= "Town can contain only latin letters, spaces and can be no more than 50 characters long." . PHP_EOL;
+        $validationMessage.= "town.registration.fail" . PHP_EOL;
         $isValid = false;
     }
     //validate the zip code using a regex pattern
     if ((isset($zipCode)) && (!preg_match('/^([a-zA-Z0-9\s\-]){0,12}$/', $zipCode))) {
-        $validationMessage.= "ZIP code can contain only numbers, latin letters, spaces, dashes and can be no more than 12 characters long." . PHP_EOL;
+        $validationMessage.= "zip.code.registration.fail" . PHP_EOL;
         $isValid = false;
     }
     //validate the address using a regex pattern
     if ((isset($address)) && (!preg_match('/^([a-zA-Z0-9\s\_\-\,\.]){0,70}$/', $address))) {
-        $validationMessage.= "Address must not contain special characters, except ,.-_ and can be no more than 70 characters long." . PHP_EOL;
+        $validationMessage.= "address.registration.fail" . PHP_EOL;
         $isValid = false;
     }
     //validate the phone using a regex pattern
     if ((isset($phone)) && (!preg_match('/^([0-9+]){0,20}$/', $phone))) {
-        $validationMessage.= "Phone number can contain only digits, '+' sign and can be no more than 20 characters long." . PHP_EOL;
+        $validationMessage.= "phone.number.registration.fail" . PHP_EOL;
         $isValid = false;
     }
     $response = array();

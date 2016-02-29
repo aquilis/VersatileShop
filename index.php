@@ -1,7 +1,7 @@
 <?php
 include 'lib/acc_functions.php';
 
-//TODO: strongly consider removing this.
+//XXX: ??? strongly consider removing this.
 if (isset($_GET['action'])) {
     switch (strtolower($_GET['action'])) {
         case 'logout':
@@ -14,15 +14,17 @@ if (isset($_GET['action'])) {
     <head>
         <title>Versatile shop</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <link href="css/bootstrap.css" rel="stylesheet">
-        <link href="css/style.css" rel="stylesheet">
-        <script src="js/jquery-1.11.0.min.js"></script>
+                <link href="css/bootstrap.css" rel="stylesheet">
+                    <link href="css/style.css" rel="stylesheet">
+                    <script src="js/jquery-1.11.0.min.js"></script>
         <script src="js/bootstrap.js"></script>
+        <script src="js/jquery.i18n.properties.js"></script>
+        <script src="js/language-utils.js"></script>
         <script>
             $(document).ready(function () {
-                $(".nav li:contains('Home')").addClass("active");
+                $(".nav li[id=header-home]").addClass("active");
+                languageUtils.applyLabelsToHTML();
             });
-
         </script>
     </head>
 
@@ -30,10 +32,8 @@ if (isset($_GET['action'])) {
         <?php include_once("templates/header.php"); ?>
         <div id="mainColumn">
             <div class="carousel-holder">
-                <h3 style="text-align:center">Order GTA V for PS/Xbox now and you gain a 15% discount!<h3>
-
+                <h3> <span i18n_label="home.page.caption"></span> <h3>
                 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-                    <!-- Indicators -->
                     <ol class="carousel-indicators">
                         <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
                         <li data-target="#carousel-example-generic" data-slide-to="1"></li>
@@ -77,7 +77,8 @@ if (isset($_GET['action'])) {
 
             <div class="section">
                 <div class="page-header">
-                    <h1>What's hot?   <small>The latest news from us</small></h1>
+                    <h1><span i18n_label="home.page.whats.hot.large"></span>
+                        <small><span i18n_label="home.page.whats.hot.small"></span></small></h1>
                 </div>
                 <div class="media">
                     <a class="pull-left" href="#">

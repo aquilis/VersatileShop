@@ -10,8 +10,11 @@ include 'lib/acc_functions.php';
         <script src="js/jquery-1.11.1-ui.js"></script>
         <script src="js/bootstrap.js"></script>
         <script src="js/utils.js"></script>
+        <script src="js/jquery.i18n.properties.js"></script>
+        <script src="js/language-utils.js"></script>
         <script>
             $(document).ready(function () {
+                $(".nav li[id=header-search]").addClass("active");
                 /**
                  * Retrieves and displays all products according to the given search criteria.
                  *
@@ -29,7 +32,7 @@ include 'lib/acc_functions.php';
                     $.getJSON("services/SearchService.php?action=search" + queryParams, function (data) {
                         var itemsHtml = "";
                         if (data.length === 0) {
-                            itemsHtml = "<h4>No results were found for the given criteria... :(</h4>";
+                            itemsHtml = "<h4>" + jQuery.i18n.map['search.page.no.results'] + "</h4>";
                         } else {
                             $(data).each(function (index, element) {
                                 var productLandingPage = utils.getBaseURL() + "/shop.php?productID=" + element.productID;
@@ -41,8 +44,8 @@ include 'lib/acc_functions.php';
                                         "<div class=\"caption\">" +
                                         "<h3>" + element.title + "</h3>" +
                                         "<p>" + element.description + "...</p>" +
-                                        "<p><b>Price: " + element.price + "$</b></p>" +
-                                        "<p><button productID='" + element.productID + "' class='btn btn-primary'>See more...</button></p>" +
+                                        "<p><b>" + jQuery.i18n.map['price'] + ": " + element.price + "$</b></p>" +
+                                        "<p><button productID='" + element.productID + "' class='btn btn-primary'>" + jQuery.i18n.map['see.more'] + "</button></p>" +
                                         "</div>" +
                                         "</div>" +
                                         "</a>" +
@@ -85,6 +88,7 @@ include 'lib/acc_functions.php';
                         }
                     });
                 });
+                languageUtils.applyLabelsToHTML();
             });
         </script>
     </head>
@@ -95,11 +99,11 @@ include 'lib/acc_functions.php';
 
         <div id="mainColumn">
             <div id="contentArea">
-                <h1><span class="glyphicon glyphicon-search"></span>  Search for products in the shop.</h1>
+                <h1><span class="glyphicon glyphicon-search"></span>  <span i18n_label="search.page.caption"></span></h1>
                 <div class="small-form">
                     <input id="search-by-title" type="text" class="form-control" placeholder="Search by title">
                     <input id="search-by-description" type="text" class="form-control" placeholder="Search by description">
-                    <button id="search-btn" type="button" class="btn btn-primary">Search</button>
+                    <button id="search-btn" type="button" class="btn btn-primary"><span i18n_label="search.page.search"></span></button>
                 </div>
                 <div id="items-area" class="row">	
                 </div>

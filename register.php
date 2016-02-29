@@ -9,6 +9,9 @@ include 'lib/acc_functions.php';
         <script src="js/jquery-1.11.0.min.js"></script>
         <script src="js/bootstrap.js"></script>
         <script src="js/utils.js"></script>
+        <script src="js/jquery.i18n.properties.js"></script>
+        <script src="js/language-utils.js"></script>
+
         <script>
             $(document).ready(function () {
                 /**
@@ -37,23 +40,23 @@ include 'lib/acc_functions.php';
                     if ((username.length === 0) || (password.length === 0) || (email.length === 0)) {
                         return {
                             status: false,
-                            message: "Please, fill in the mandatory fields.",
+                            message: "fill.in.mandatory.fields",
                             errorInMandatoryFields: true
                         };
                     }
                     //validate the username using a regex pattern
                     if (!username.match(/^([a-zA-Z0-9_-]){5,15}$/)) {
-                        validationMessage += "Username must contain only latin letters or numbers, no spaces and be between 5 and 15 characters long.\n";
+                        validationMessage += "username.registration.fail\n";
                         isValid = false;
                     }
                     //validate the password using a regex pattern
                     if (!password.match(/^([a-zA-Z0-9_-]){6,20}$/)) {
-                        validationMessage += "Password must contain only latin letters or numbers, no spaces and be between 6 and 20 characters long.\n";
+                        validationMessage += "password.registration.fail\n";
                         isValid = false;
                     }
                     //validate the e-mail using a regex pattern
                     if (!email.match(/[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}/)) {
-                        validationMessage += "Invalid e-mail format.\n";
+                        validationMessage += "email.registration.fail\n";
                         isValid = false;
                     }
                     //if the mandatory details are not valid, don't validate the additional
@@ -66,32 +69,32 @@ include 'lib/acc_functions.php';
                     }
                     //validate the first name using a regex pattern
                     if ((typeof(firstName)!=="undefined") && (firstName.length > 0) && (!firstName.match(/^([a-zA-Z\s]){0,50}$/))) {
-                        validationMessage += "First name can contain only latin letters, spaces and can be no more than 50 characters long.\n";
+                        validationMessage += "first.name.registration.fail\n";
                         isValid = false;
                     }
                     //validate the last name using a regex pattern
                     if ((typeof(lastName)!=="undefined") && (lastName.length > 0) && (!lastName.match(/^([a-zA-Z\s]){0,50}$/))) {
-                        validationMessage += "Last name can contain only latin letters, spaces and can be no more than 50 characters long.\n";
+                        validationMessage += "last.name.registration.fail\n";
                         isValid = false;
                     }
                     //validate the town using a regex pattern
                     if ((typeof(town)!=="undefined") && (town.length > 0) && (!town.match(/^([a-zA-Z\s]){0,50}$/))) {
-                        validationMessage += "Town can contain only latin letters, spaces and can be no more than 50 characters long.\n";
+                        validationMessage += "town.registration.fail\n";
                         isValid = false;
                     }
                     //validate the zip code using a regex pattern
                     if ((typeof(zipCode)!=="undefined") && (zipCode.length > 0) && (!zipCode.match(/^([a-zA-Z0-9\s\-]){0,12}$/))) {
-                        validationMessage += "ZIP code can contain only numbers, latin letters, spaces, dashes and can be no more than 12 characters long.\n";
+                        validationMessage += "zip.code.registration.fail\n";
                         isValid = false;
                     }
                     //validate the address using a regex pattern
                     if ((typeof(address)!=="undefined") && (address.length > 0) && (!address.match(/^([a-zA-Z0-9\s\_\-\,\.]){0,70}$/))) {
-                        validationMessage += "Address must not contain special characters, except ,.-_ and can be no more than 70 characters long.\n";
+                        validationMessage += "address.registration.fail\n";
                         isValid = false;
                     }
                      //validate the phone using a regex pattern
                     if ((typeof(phone)!=="undefined") && (phone.length > 0) && (!phone.match(/^([0-9+]){0,20}$/))) {
-                        validationMessage += "Phone number can contain only digits, '+' sign and can be no more than 20 characters long.\n";
+                        validationMessage += "phone.number.registration.fail\n";
                         isValid = false;
                     }
                     return {
@@ -111,14 +114,20 @@ include 'lib/acc_functions.php';
                     if (validationResult.status === true) {
                         return;
                     }
-                    var errors = validationResult.message.replace(/(?:\r\n|\r|\n)/g, "<br/>");
+                    var split = validationResult.message.split(/(?:\r\n|\r|\n)/g);
+                    var errors = "";
+                    $.each(split, function(index, value) {
+                        if(value.length > 0) {
+                            errors+= jQuery.i18n.map[value] + "<br/>";
+                        }
+                    });
                     var html = "<div class=\"alert alert-danger\" role=\"alert\"><span class=\"glyphicon glyphicon-remove\"></span> " +
                             errors + "</div>";
                     var resultPanel = $("#result-panel");
                     resultPanel.html(html);
                     //scroll  to top of page, so that the user can see the errors
                     window.scrollTo(0,0);
-                    if(typeof(validationResult.errorInMandatoryFields)!=="undefined" && validationResult.errorInMandatoryFields===true) {
+                    if(validationResult.errorInMandatoryFields) {
                         $(".mandatory-details").addClass("has-error");
                         $(".additional-details").removeClass("has-error");
                     } else {
@@ -156,7 +165,8 @@ include 'lib/acc_functions.php';
                         }
                         //display the successful server response
                         var html = "<div class=\"alert alert-success\" role=\"alert\"><span class=\"glyphicon glyphicon-ok\"></span>" +
-                                " Registration successful! You will be now redirected to the <a href='login.php'>login page.</a></div>";
+                            jQuery.i18n.map['registration.successfull.redirect'] +  "<a href='login.php'>" +
+                             jQuery.i18n.map['login'] + "</a></div>";
                         var resultPanel = $("#result-panel");
                         resultPanel.fadeIn("fast");
                         resultPanel.html(html);
@@ -166,6 +176,7 @@ include 'lib/acc_functions.php';
                         });
                     });
                 });
+                languageUtils.applyLabelsToHTML();
             });
         </script>
     </head>
@@ -175,36 +186,36 @@ include 'lib/acc_functions.php';
 
         <div id="mainColumn">
             <div id="contentArea">
-                <h1><span class="glyphicon glyphicon-user"></span> Register a new user</h1>
-                <p>Fields with * are mandatory</p>
+                <h1><span class="glyphicon glyphicon-user"></span> <span i18n_label="register.new.user"></span></h1>
+                <p><span i18n_label="fields.asterisk.mandatory"></span></p>
                 <div class="panel panel-primary authentication-panel">
                     <div id="result-panel"></div>
                     <div class="form-group login-form">
                         <div class="mandatory-details">
-                            <label>Username*</label>
-                            <input id="username-field" class="form-control" type="text" placeholder="Username"><br>
-                            <label>E-mail*</label>
-                            <input id="email-field" class="form-control" type="text" placeholder="Email"><br>
-                            <label>Password*</label>
-                            <input id="password-field" class="form-control" type="password" placeholder="Password">
+                            <label><span i18n_label="username"></span>*</label>
+                            <input id="username-field" class="form-control" type="text"><br>
+                            <label><span i18n_label="email"></span>*</label>
+                            <input id="email-field" class="form-control" type="text"><br>
+                            <label><span i18n_label="password"></span>*</label>
+                            <input id="password-field" class="form-control" type="password">
                         </div>
                         <hr>
-                        <h5>Additional user details (not mandatory, but recommended)</h5>
+                        <h5><span i18n_label="additional.user.details.heading"></span></h5>
                         <div class="additional-details">
-                            <label>First name</label>
-                            <input id="first-name-field" class="form-control" type="text" placeholder="First name"><br>
-                            <label>Last name</label>
-                            <input id="last-name-field" class="form-control" type="text" placeholder="Last name"><br>
-                            <label>Town</label>
-                            <input id="town-field" class="form-control input-sml" type="text" placeholder="Town"><br>
-                            <label>ZIP (Postal) code</label>
-                            <input id="zip-field" class="form-control input-sml" type="text" placeholder="ZIP (Postal) code"><br>
-                            <label>Address</label>
-                            <input id="address-field" class="form-control" type="text" placeholder="Address"><br>
-                            <label>Phone</label>
-                            <input id="phone-field" class="form-control" type="text" placeholder="Phone">
+                            <label><span i18n_label="first.name"></span></label>
+                            <input id="first-name-field" class="form-control" type="text"><br>
+                            <label><span i18n_label="last.name"></span></label>
+                            <input id="last-name-field" class="form-control" type="text"><br>
+                            <label><span i18n_label="town"></span></label>
+                            <input id="town-field" class="form-control input-sml" type="text"><br>
+                            <label><span i18n_label="zip.code"></span></label>
+                            <input id="zip-field" class="form-control input-sml" type="text"><br>
+                            <label><span i18n_label="address"></span></label>
+                            <input id="address-field" class="form-control" type="text"><br>
+                            <label><span i18n_label="phone.number"></span></label>
+                            <input id="phone-field" class="form-control" type="text">
                         </div>
-                        <button id="register-btn" type="button" class="btn btn-primary">Register</button>
+                        <button id="register-btn" type="button" class="btn btn-primary"><span i18n_label="register.button"></span></button>
                     </div>
 
                 </div>

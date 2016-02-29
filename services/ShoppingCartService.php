@@ -12,6 +12,12 @@ $dbConnection = getVersatileShopDbConnection();
 //avoid special characters and sql injection
 $requestMethod = filter_input(INPUT_SERVER, "REQUEST_METHOD", FILTER_SANITIZE_STRING);
 
+const PRODUCT_REMOVED_FROM_CART = "product.removed.shopping.cart";
+const ADDED_TO_CART = "added.to.shopping.cart";
+const MORE_ADDED_TO_CART = "more.items.added.to.shopping.cart";
+const CART_IS_EMPTY = "shopping.cart.empty";
+
+
 if ($requestMethod == "GET") {
     if (isset($_SESSION["products"])) {
         $jsonData = array();
@@ -42,7 +48,7 @@ if ($requestMethod == "GET") {
                 //the product already exists in the cart, so just increase its quantity
                 $_SESSION["products"][$k]["quantity"]+= $quantity;
                 $found = true;
-                $message = $quantity . " more item(s) of this one were added to your shopping cart.";
+                $message = MORE_ADDED_TO_CART;
                 break;
             }
         }
@@ -62,7 +68,7 @@ if ($requestMethod == "GET") {
         } else {
             $_SESSION["products"] = array($newProduct);
         }
-        $message = "The item was added to your shopping cart.";
+        $message = ADDED_TO_CART;
     }
     echo $message;
 } else if ($requestMethod == "DELETE") {
@@ -73,14 +79,14 @@ if ($requestMethod == "GET") {
             foreach ($_SESSION["products"] as $k => $v) {
                 if ($v["productID"] == $productID) {
                     unset($_SESSION["products"][$k]);
-                    echo "Product successfully removed from the shopping cart";
+                    echo PRODUCT_REMOVED_FROM_CART;
                     break;
                 }
             }
         } else {
             //if no specific product ID is given, reset the whole shopping cart
             $_SESSION["products"] = [];
-            echo "Your shopping cart is now empty";
+            echo CART_IS_EMPTY;
         }
     }
 }

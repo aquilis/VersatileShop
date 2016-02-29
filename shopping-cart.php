@@ -9,12 +9,14 @@ include 'lib/acc_functions.php';
         <script src="js/jquery-1.11.0.min.js"></script>
         <script src="js/bootstrap.js"></script>
         <script src="js/utils.js"></script>
+        <script src="js/jquery.i18n.properties.js"></script>
+        <script src="js/language-utils.js"></script>
         <script>
             /**
              * Displays the cart items (if any) at page load.
              */
             $(document).ready(function () {
-                $(".nav li:contains('View shopping cart')").addClass("active");
+                $(".nav li[id=header-cart]").addClass("active");
                 loadShoppingCart();
             });
             
@@ -36,15 +38,16 @@ include 'lib/acc_functions.php';
                                 "<div class=\"panel panel-info\">" +
                                 "<div class=\"panel-heading\"><h4>" +
                                 element.title +
-                                "<a class='remove-from-cart-btn close-delete-btn' productID='" + element.productID + "'><span class='glyphicon glyphicon-remove'></span> Remove from cart</a>" +
+                                "<a class='remove-from-cart-btn close-delete-btn' productID='" + element.productID + "'>" +
+                                "<span class='glyphicon glyphicon-remove'></span> <span i18n_label=\"remove.from.cart\"></span></a>" +
                                 "</h4></div>" +
                                 "<div class=\"panel-body\">" +
                                 " <a href='shop.php?productID=" + element.productID + "' class=\"thumbnail shopping-cart-thumbnail\">" +
                                 "<img src='" + element.thumbnailPath + "' alt=\"thumbnail\">" +
                                 "</a>" +
-                                "<p>Quantity: " + element.quantity +
-                                "<p>Price for a single game: " + element.price +
-                                "<p>Price total: " + (element.price * element.quantity) +
+                                "<p><span i18n_label=\"quantity\"></span>: " + element.quantity +
+                                "<p><span i18n_label=\"price\"></span>: " + element.price +
+                                "<p><span i18n_label=\"price.total\"></span>: " + (element.price * element.quantity) +
                                 "</div>" +
                                 "</div>";
                         totalSum += (element.price * element.quantity);
@@ -52,7 +55,7 @@ include 'lib/acc_functions.php';
                     });
                     //if there are any products in the cart, show the shopping cart buttons, otherwise, hide them and how an image for an empty cart
                     if (hasProducts) {
-                        itemsHtml += "<h4>Total: " + totalSum + "$</h4>";
+                        itemsHtml += "<h4><span i18n_label=\"total\"></span>: " + totalSum + "$</h4>";
                         //TODO: why row when there are many rows??
                         $(".row").html(itemsHtml);
                         if (!$("#cart-buttons").is(":visible")) {
@@ -65,7 +68,7 @@ include 'lib/acc_functions.php';
                                 type: "DELETE",
                             }).done(function (msg) {
                                 loadShoppingCart();
-                                var html = "<div class=\"alert alert-success\" role=\"alert\">" + msg + "</div>";
+                                var html = "<div class=\"alert alert-success\" role=\"alert\">" + jQuery.i18n.map[msg.trim()] + "</div>";
                                 utils.displayAndFadeOutResultsPanel("result-panel", html, "fast");
                             });
                         });
@@ -83,10 +86,11 @@ include 'lib/acc_functions.php';
                         }).done(function (msg) {
                             //reload the shopping cart after deleting a product
                             loadShoppingCart();
-                            var html = "<div class=\"alert alert-success\" role=\"alert\">" + msg + "</div>";
+                            var html = "<div class=\"alert alert-success\" role=\"alert\">" + jQuery.i18n.map[msg.trim()] + "</div>";
                             utils.displayAndFadeOutResultsPanel("result-panel", html, "fast");
                         });
                     });
+                    languageUtils.applyLabelsToHTML();
                 });
             }
         </script>
@@ -97,13 +101,14 @@ include 'lib/acc_functions.php';
         <?php include_once("templates/header.php"); ?>
         <div id="mainColumn">
             <div id="contentArea">
-                <h1><span class="glyphicon glyphicon-shopping-cart"></span>Your shopping cart</h1>
+                <h1><span class="glyphicon glyphicon-shopping-cart"></span><span i18n_label="your.shopping.cart"></span>
+                </h1>
                 <div id="result-panel" class="result-panel-sml"> </div>
                 <div id="items-area" class="row">			
                 </div>
                 <div id="cart-buttons">
-                    <button id="empty-cart-btn" class="btn btn-lg btn-warning"><span class="glyphicon glyphicon-remove"></span> Empty cart</button>
-                    <button class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-usd"></span> To checkout</button>
+                    <button id="empty-cart-btn" class="btn btn-lg btn-warning"><span class="glyphicon glyphicon-remove"></span> <span i18n_label="empty.cart"></span></button>
+                    <button class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-usd"></span> <span i18n_label="to.checkout"></span></button>
                 </div>
             </div> 
         </div>

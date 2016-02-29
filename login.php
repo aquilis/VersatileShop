@@ -3,18 +3,24 @@ include 'lib/acc_functions.php';
 ?>
 <html>
     <head>
-        <title>Aquilis's dynamic web page</title>
+        <title>Login</title>
         <link href="css/bootstrap.css" rel="stylesheet">
         <link href="css/style.css" rel="stylesheet">
         <script src="js/jquery-1.11.0.min.js"></script>
         <script src="js/bootstrap.js"></script>
+        <script src="js/jquery.i18n.properties.js"></script>
+        <script src="js/language-utils.js"></script>
     </head>
-
+    <script>
+        $(document).ready(function () {
+            languageUtils.applyLabelsToHTML();
+        });
+    </script>
     <body class="paper-textured">
         <?php include_once("templates/header.php"); ?>
 
         <div id="mainColumn">
-            <h1>Login to your account or <a href="register.php">register</a></h1>
+            <h1><span i18n_label="login.to.account"></span> <a href="register.php"><span i18n_label="register.verb"></span></a></h1>
             <div id="contentArea">
                 <?php
                 $failedLogin = false;
@@ -29,6 +35,7 @@ include 'lib/acc_functions.php';
                                 }
                                 //reset the shopping cart when a new user logs in
                                 //TODO: is this the right way??
+                                //XXX This really sux
                                 if (isset($_SESSION['products'])) {
                                     unset($_SESSION['products']);
                                 }
@@ -45,37 +52,37 @@ include 'lib/acc_functions.php';
 
                 if (($failedLogin == false) && (!isLogged())) {
                     if (isset($_GET['newReg'])) {
-                        echo "<div class=\"alert alert-success\">
-  						Well done! You can now login to your account.
+                        echo "<div class=\"alert alert-success\"> +
+  						<span i18n_label=\"successfull.registration.message\"></span> +
 						</div>";
                     }
                     echo "
 		 		   <div class=\"panel panel-primary\">
 		 			<div class=\"login-form\">
 			    	<form action=\"login.php?action=validate\" method=\"post\">
-			        <label>Username</label>
+			        <label><span i18n_label=\"username\"></span></label>
 			        <input class=\"form-control\" type=\"text\" placeholder=\"Username\" name=\"username\"><br>
-			        <label>Password</label>
+			        <label><span i18n_label=\"password\"></span></label>
 			        <input class=\"form-control\" type=\"password\" placeholder=\"Password\" name=\"pass\">
-			        <label class=\"checkbox\"><input type=\"checkbox\"> Remember me</label>
-			        <button type=\"submit\" class=\"btn btn-primary\">Login</button>
+			        <label class=\"checkbox\"><input type=\"checkbox\"> <span i18n_label=\"remember.me\"></span></label>
+			        <button type=\"submit\" class=\"btn btn-primary\"><span i18n_label=\"login\"></span></button>
 			    	</form>
 					</div>
 					</div>";
                 } elseif ($failedLogin == true) {
                     echo "
 					<div class=\"panel panel-primary\">
-					  <div class=\"alert alert-danger\">Oops.. Seems like you typed in a wrong username or password. Please, try again.</div>
+					  <div class=\"alert alert-danger\"><span i18n_label=\"login.invalid.message\"></span></div>
 						<div class=\"login-form\">
 									<div class=\"form-group has-error\">
 								<form action=\"login.php?action=validate\" method=\"post\">
-									 <label class=\"control-label\" for=\"inputError\">Username</label>
+									 <label class=\"control-label\" for=\"inputError\"><span i18n_label=\"username\"></span></label>
 									<input class=\"form-control\" type=\"text\" placeholder=\"Username\" name=\"username\" id=\"inputError\"><br>
-									 <label class=\"control-label\" for=\"inputError\">Password</label>
+									 <label class=\"control-label\" for=\"inputError\"><span i18n_label=\"password\"></span></label>
 									 <input class=\"form-control\" type=\"password\" placeholder=\"Password\" name=\"pass\" id=\"inputError\">
 									 </div> 
-									 <label class=\"checkbox\"><input type=\"checkbox\"> Remember me</label>
-									 <button type=\"submit\" class=\"btn btn-primary\">Login</button>
+									 <label class=\"checkbox\"><input type=\"checkbox\"> <span i18n_label=\"remember.me\"></span></label>
+									 <button type=\"submit\" class=\"btn btn-primary\"><span i18n_label=\"login\"></span></button>
 								</form>
 
 						</div>
