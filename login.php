@@ -1,5 +1,6 @@
 <?php
-include 'lib/acc_functions.php';
+include_once 'lib/utils.php';
+
 ?>
 <html>
     <head>
@@ -10,86 +11,64 @@ include 'lib/acc_functions.php';
         <script src="js/bootstrap.js"></script>
         <script src="js/jquery.i18n.properties.js"></script>
         <script src="js/language-utils.js"></script>
+        <script src="js/utils.js"></script>
     </head>
     <script>
         $(document).ready(function () {
             languageUtils.applyLabelsToHTML();
+            $("#inputUsername").attr("placeholder", jQuery.i18n.map['username']);
+            $("#inputPassword").attr("placeholder", jQuery.i18n.map['password']);
+            $("#login-btn").click(function() {
+
+                var userDetails = {
+                    username : $("#inputUsername").val(),
+                    password : $("#inputPassword").val()
+                }
+
+                $.post("services/AuthenticationService.php?action=authenticate", userDetails).done(function (data) {
+                    var serverValidationResult = data;
+                    var resultPanel = $("#result-panel");
+                    if (serverValidationResult.status === false) {
+                        var html = "<div class=\"alert alert-danger\" role=\"alert\"><span class=\"glyphicon glyphicon-remove\"></span> " +
+                            jQuery.i18n.map[serverValidationResult.message.trim()] + "</div>";
+                        resultPanel.fadeIn("fast");
+                        resultPanel.html(html);
+                        window.scrollTo(0,0);
+                        return;
+                    }
+                    //display the successful server response
+                    var html = "<div class=\"alert alert-success\" role=\"alert\"><span class=\"glyphicon glyphicon-ok\"></span>" +
+                        jQuery.i18n.map[serverValidationResult.message.trim()];
+                    resultPanel.fadeIn("fast");
+                    resultPanel.html(html);
+                    window.scrollTo(0,0);
+                    resultPanel.delay(1500).fadeOut(1200, function () {
+                        window.location.href = utils.getBaseURL() + "/index.php";
+                    });
+                });
+            })
+
         });
     </script>
     <body class="paper-textured">
         <?php include_once("templates/header.php"); ?>
-
         <div id="mainColumn">
-            <h1><span i18n_label="login.to.account"></span> <a href="register.php"><span i18n_label="register.verb"></span></a></h1>
             <div id="contentArea">
-                <?php
-                $failedLogin = false;
-                if (isset($_GET['action'])) {
-                    switch (strtolower($_GET['action'])) {
-                        case 'validate':
-                            if (validateLogin($_POST["username"], $_POST["pass"])) {
-                                $_SESSION['isLogged'] = 1;
-                                $_SESSION['username'] = $_POST["username"];
-                                if (isAdmin(trim($_POST["username"]))) {
-                                    $_SESSION['isAdmin'] = 1;
-                                }
-                                //reset the shopping cart when a new user logs in
-                                //TODO: is this the right way??
-                                //XXX This really sux
-                                if (isset($_SESSION['products'])) {
-                                    unset($_SESSION['products']);
-                                }
-                                setcookie('lastLogin', date("d/m/y H:i:s"), 60 * 60 * 24 * 60 + time());
-                                header("Location: index.php");
-                                exit;
-                            } else {
-                                $_SESSION['isLogged'] = 0;
-                                $failedLogin = true;
-                            }
-                            break;
-                    }
-                }
-
-                if (($failedLogin == false) && (!isLogged())) {
-                    if (isset($_GET['newReg'])) {
-                        echo "<div class=\"alert alert-success\"> +
-  						<span i18n_label=\"successfull.registration.message\"></span> +
-						</div>";
-                    }
-                    echo "
-		 		   <div class=\"panel panel-primary\">
-		 			<div class=\"login-form\">
-			    	<form action=\"login.php?action=validate\" method=\"post\">
-			        <label><span i18n_label=\"username\"></span></label>
-			        <input class=\"form-control\" type=\"text\" placeholder=\"Username\" name=\"username\"><br>
-			        <label><span i18n_label=\"password\"></span></label>
-			        <input class=\"form-control\" type=\"password\" placeholder=\"Password\" name=\"pass\">
-			        <label class=\"checkbox\"><input type=\"checkbox\"> <span i18n_label=\"remember.me\"></span></label>
-			        <button type=\"submit\" class=\"btn btn-primary\"><span i18n_label=\"login\"></span></button>
-			    	</form>
-					</div>
-					</div>";
-                } elseif ($failedLogin == true) {
-                    echo "
-					<div class=\"panel panel-primary\">
-					  <div class=\"alert alert-danger\"><span i18n_label=\"login.invalid.message\"></span></div>
-						<div class=\"login-form\">
-									<div class=\"form-group has-error\">
-								<form action=\"login.php?action=validate\" method=\"post\">
-									 <label class=\"control-label\" for=\"inputError\"><span i18n_label=\"username\"></span></label>
-									<input class=\"form-control\" type=\"text\" placeholder=\"Username\" name=\"username\" id=\"inputError\"><br>
-									 <label class=\"control-label\" for=\"inputError\"><span i18n_label=\"password\"></span></label>
-									 <input class=\"form-control\" type=\"password\" placeholder=\"Password\" name=\"pass\" id=\"inputError\">
-									 </div> 
-									 <label class=\"checkbox\"><input type=\"checkbox\"> <span i18n_label=\"remember.me\"></span></label>
-									 <button type=\"submit\" class=\"btn btn-primary\"><span i18n_label=\"login\"></span></button>
-								</form>
-
-						</div>
-					</div>";
-                }
-                ?>
+        <div class="container">
+            <div class="form-group authentication-form">
+                <div id="result-panel"></div>
+                <h2 class="form-signin-heading"><span i18n_label="login.to.account"></span> <a href="register.php"><span i18n_label="register.verb"></span></a></h2>
+                <input type="text" id="inputUsername" class="form-control" required autofocus>
+                <input type="password" id="inputPassword" class="form-control" required>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="remember-me"> <span i18n_label="remember.me"></span>
+                    </label>
+                </div>
+                <button id="login-btn" class="btn btn-lg btn-primary btn-block"><span i18n_label="login"></span></button>
             </div>
+        </div>
+        </div>
         </div>
         <?php include_once("templates/footer.php"); ?>
     </body>

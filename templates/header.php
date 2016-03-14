@@ -31,7 +31,7 @@
 		        <ul class=\"dropdown-menu\">
 		          <li><a href=\"#\"><span i18n_label=\"profile\"></span></a></li>
 		          <li class=\"divide\r\"></li>
-		          <li><a href=\"index.php?action=logout\"><span i18n_label=\"logout\"></span></a></li>
+		          <li><a href=\"services/AuthenticationService.php?action=logout\"><span i18n_label=\"logout\"></span></a></li>
 		        </ul>
 		      </li>";
 		      }

@@ -190,7 +190,7 @@ include 'lib/acc_functions.php';
                 <p><span i18n_label="fields.asterisk.mandatory"></span></p>
                 <div class="panel panel-primary authentication-panel">
                     <div id="result-panel"></div>
-                    <div class="form-group login-form">
+                    <div class="form-group registration-form">
                         <div class="mandatory-details">
                             <label><span i18n_label="username"></span>*</label>
                             <input id="username-field" class="form-control" type="text"><br>

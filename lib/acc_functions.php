@@ -82,6 +82,7 @@ function validateLogin($username, $pass) {
 /**
  * 	Validates the length of the username and password and checks if the username is unique in the Db.
  * */
+//TODO obsolete function
 function validateRegistration($username, $pass) {
     $username = trim($username);
     $pass = trim($pass);
@@ -116,6 +117,7 @@ function validateRegistration($username, $pass) {
 /**
  * 	Creates the new user account in the database.
  * */
+//TODO this is obsolete.. remove it
 function createAccount($username, $pass) {
     $username = trim($username);
     $pass = trim($pass);
@@ -141,9 +143,10 @@ function isAdmin($username) {
         echo "Failed to connect to MySQL: " . mysqli_connect_error();
     }
     //$sql = "SELECT username FROM admins WHERE username = '".mysqli_real_escape_string($con, $username)."' LIMIT 1";
-    $sql = "SELECT userID FROM admins WHERE userID = (SELECT userID from users where username = '" . mysqli_real_escape_string($con, $username) . "') LIMIT 1";
+    //$sql = "SELECT username FROM admins WHERE username = (SELECT username from users where username = '" . mysqli_real_escape_string($con, $username) . "') LIMIT 1";
+    $sql = "select users.username from users, admins where users.username = admins.username and users.username = '". mysqli_real_escape_string($con, $username) ."' limit 1";
     $query = mysqli_query($con, $sql) or trigger_error("Query Failed: " . mysql_error());
-    if (mysqli_num_rows($query) == 1) {
+    if (mysqli_num_rows($query) > 0) {
         mysqli_close($con);
         return true;
     } else {

@@ -1,6 +1,7 @@
 <?php
 
 include '../lib/utils.php';
+include "../dataAccessObjects/UsersDAO.php";
 
 //get the database connection
 $dbConnection = getVersatileShopDbConnection();
@@ -8,7 +9,7 @@ $dbConnection = getVersatileShopDbConnection();
 //avoid special characters and sql injection
 $requestMethod = filter_input(INPUT_SERVER, "REQUEST_METHOD", FILTER_SANITIZE_STRING);
 
-//messages keyset from the resource bundle
+$usersDAO = new UsersDAO("users");
 
 
 if ($requestMethod == "POST") {
@@ -36,7 +37,7 @@ if ($requestMethod == "POST") {
     $password = htmlspecialchars($_POST["password"], ENT_QUOTES);
     $email = htmlspecialchars($_POST["email"], ENT_QUOTES);
     //create the new account and return the response
-    $queryResult = createAccount($userData, $dbConnection);
+    $queryResult = createAccount($userData, $usersDAO);
     header('Content-Type: application/json');
     echo json_encode($queryResult);
 }
@@ -44,7 +45,7 @@ if ($requestMethod == "POST") {
 /**
  * Validates the length, content of the username/password and the uniqueness of the username in
  * the database.
- * 
+ *
  * @param $userData is an associative array containing all user data
  * @param $dbConnection is the database connection
  * @return a response object with a boolean status field and a messages field
@@ -79,13 +80,13 @@ function validateRegistration($userData, $dbConnection) {
     //check if the username already exists in the DB, if it's valid so far
     if ($isValid) {
         $usernameQuery = mysqli_query($dbConnection, "SELECT username FROM users WHERE username = '" .
-                mysqli_real_escape_string($dbConnection, $username) . "' LIMIT 1");
+            mysqli_real_escape_string($dbConnection, $username) . "' LIMIT 1");
         if (mysqli_num_rows($usernameQuery) > 0) {
             $validationMessage .= "username.already.used" . PHP_EOL;
             $isValid = false;
         }
         $emailQuery = mysqli_query($dbConnection, "SELECT email FROM users WHERE email = '" .
-                mysqli_real_escape_string($dbConnection, $email) . "' LIMIT 1");
+            mysqli_real_escape_string($dbConnection, $email) . "' LIMIT 1");
         if (mysqli_num_rows($emailQuery) > 0) {
             $validationMessage .= "email.already.used" . PHP_EOL;
             $isValid = false;
@@ -139,31 +140,26 @@ function validateRegistration($userData, $dbConnection) {
 
 /**
  * Creates a new account in the DB with the given username and password, supposing they are already validated.
- * 
+ *
  * @param $userData is an associative array containing all user data
  * @param $dbConnection is the database connection
  * @return a response object with a boolean status field and a messages field
  */
-function createAccount($userData, $dbConnection) {
+function createAccount($userData, $usersDAO) {
     if (isLogged()) {
         logOut();
     }
-    $query = buildCreateUserSqlQuery($userData, $dbConnection);
-    $queryResult = mysqli_query($dbConnection, $query);
-    $result = array();
-    if ($queryResult) {
-        $result["status"] = true;
-        $result["message"] = "Registration was successful.";
-    } else {
-        $result["status"] = false;
-        $result["message"] = "Invalid query: " . mysql_error($dbConnection);
-    }
+    $usersDAO->registerValidatedUser($userData);
+    //TODO return proper message here
+    $result["status"] = true;
+    $result["message"] = "Registration was successful.";
     return $result;
 }
 
+//XXX redundant method
 /**
  * Builds the SQL query for inserting the given validated data for the new user into the database.
- * 
+ *
  * @param $userData is an associative array containing all user data
  * @param type $dbConnection is the database connection
  * @return the SQL query
@@ -182,8 +178,8 @@ function buildCreateUserSqlQuery($userData, $dbConnection) {
     //first put the mandatory details into the query
     $fields = "(username, password, email";
     $values = "('" . mysqli_real_escape_string($dbConnection, $username) . "', '" .
-            hashPassword($pass, SALT1, SALT2) . "', '" .
-            mysqli_real_escape_string($dbConnection, $email) . "'";
+        hashPassword($pass, SALT1, SALT2) . "', '" .
+        mysqli_real_escape_string($dbConnection, $email) . "'";
 
     //check if any of the additional details is set and append it to the query
     //NOTE: iterating over the $userData and putting its key => values directly into the query has vulnerabilites and is avoided

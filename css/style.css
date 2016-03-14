@@ -102,11 +102,16 @@ footer #panel .panel-inner {
         background-repeat:repeat;
     }
 
-    .login-form {
+    .registration-form {
         border-radius: 10px;
         background: rgba(255,255,255,0.10);
         padding: 32px;
         width: 60%;
+    }
+
+    .authentication-form {
+        margin-left: 28% !important;
+        width: 40%;
     }
 
     .result-panel {
