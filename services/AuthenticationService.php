@@ -17,7 +17,11 @@ if ($requestMethod == "GET") {
     $action = filter_input(INPUT_GET, "action", FILTER_SANITIZE_STRING);
     if($action == "logout") {
         logOut();
-        //TODO: find a way to redirect
+        $response = array();
+        $response["status"] = true;
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        return;
     }
 } else if ($requestMethod == "POST") {
     $action = filter_input(INPUT_GET, "action", FILTER_SANITIZE_STRING);

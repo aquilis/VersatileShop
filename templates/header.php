@@ -1,4 +1,19 @@
-	<nav class="navbar navbar-inverse" role="navigation">
+<script>
+	$("#logout-btn").click(function() {
+		alert("Hello world");
+	});
+
+	/**
+	 * Calls the service for logging out the currently logged user and redirects to home page.
+	 */
+	function logOut() {
+		$.getJSON("services/AuthenticationService.php?action=logout", function (data) {
+				window.location.href = document.URL.substring(0, document.URL.lastIndexOf("/")) + "/index.php"
+		});
+	}
+</script>
+
+<nav class="navbar navbar-inverse" role="navigation">
 	  <div class="navbar-header">
 	    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
 	      <span class="sr-only">Toggle navigation</span>
@@ -31,7 +46,7 @@
 		        <ul class=\"dropdown-menu\">
 		          <li><a href=\"#\"><span i18n_label=\"profile\"></span></a></li>
 		          <li class=\"divide\r\"></li>
-		          <li><a href=\"services/AuthenticationService.php?action=logout\"><span i18n_label=\"logout\"></span></a></li>
+		          <li><a onclick=\"logOut()\" id=\"logout-btn\"><span i18n_label=\"logout\"></span></a></li>
 		        </ul>
 		      </li>";
 		      }

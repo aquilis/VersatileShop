@@ -20,9 +20,16 @@ include_once 'lib/utils.php';
             $("#inputPassword").attr("placeholder", jQuery.i18n.map['password']);
             $("#login-btn").click(function() {
 
+                var formUsername = $("#inputUsername").val();
+                var formPassword = $("#inputPassword").val();
+
+                if(formUsername.length == 0 || formPassword.length == 0) {
+                    return;
+                }
+
                 var userDetails = {
-                    username : $("#inputUsername").val(),
-                    password : $("#inputPassword").val()
+                    username : formUsername,
+                    password : formPassword
                 }
 
                 $.post("services/AuthenticationService.php?action=authenticate", userDetails).done(function (data) {
@@ -42,7 +49,7 @@ include_once 'lib/utils.php';
                     resultPanel.fadeIn("fast");
                     resultPanel.html(html);
                     window.scrollTo(0,0);
-                    resultPanel.delay(1500).fadeOut(1200, function () {
+                    resultPanel.delay(800).fadeOut(1200, function () {
                         window.location.href = utils.getBaseURL() + "/index.php";
                     });
                 });
@@ -65,7 +72,7 @@ include_once 'lib/utils.php';
                         <input type="checkbox" value="remember-me"> <span i18n_label="remember.me"></span>
                     </label>
                 </div>
-                <button id="login-btn" class="btn btn-lg btn-primary btn-block"><span i18n_label="login"></span></button>
+                <button type="submit" id="login-btn" class="btn btn-lg btn-primary btn-block"><span i18n_label="login"></span></button>
             </div>
         </div>
         </div>
