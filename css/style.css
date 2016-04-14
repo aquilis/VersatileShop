@@ -255,3 +255,24 @@ ul.ui-autocomplete.ui-menu li{
 ul.ui-autocomplete.ui-menu li:hover {
   background-color: #C0C0C0;
 }
+#orders-section {
+    width: 75%;
+    margin-bottom: 16px;
+    margin-top: 32px;
+}
+
+#orders-section .row {
+    font-size: large;
+}
+
+#orders-section .head-row {
+    font-size: large;
+    font-weight: bold;
+}
+#orders-section .row:nth-child(even) {
+    background-color: white;
+}
+
+.shipping-address-form {
+    width: 50%;
+}
