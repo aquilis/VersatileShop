@@ -1,5 +1,5 @@
 <?php
-include 'lib/acc_functions.php';
+include 'lib/utils.php';
 ?>
 <html>
     <head>
@@ -49,7 +49,7 @@ include 'lib/acc_functions.php';
 
                 });
                 $("#items-area").html(itemsHtml);
-                languageUtils.applyLabelsToHTML();
+                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
             }).done(function () {
                 $(".product-tile .btn-primary").click(function () {
                     loadProduct($(this).attr("productID"));
@@ -111,7 +111,7 @@ include 'lib/acc_functions.php';
                     var quantity = $("#quantity-picker").find(":selected").text();
                     addToCart(id, quantity);
                 });
-                languageUtils.applyLabelsToHTML();
+                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
             });
         }
 
@@ -177,7 +177,8 @@ include 'lib/acc_functions.php';
         function addToCart(productID, quantity) {
             $.post("services/ShoppingCartService.php", {productID: productID, quantity: quantity}, function () {
             }).done(function (data) {
-                            var html = "<div class=\"alert alert-success\" role=\"alert\"><span class=\"glyphicon glyphicon-ok\"></span>   " + jQuery.i18n.map[data.trim()] + "</div>";
+                    utils.initiateHeaderToolTips();
+                    var html = "<div class=\"alert alert-success\" role=\"alert\"><span class=\"glyphicon glyphicon-ok\"></span>   " + jQuery.i18n.map[data.trim()] + "</div>";
                     var resulPanel = $("#shopping-cart-result");
                     resulPanel.fadeIn("fast");
                     resulPanel.html(html);

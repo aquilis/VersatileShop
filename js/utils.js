@@ -185,3 +185,22 @@ utils.generateParam = function(initialString, paramName, inputTextId) {
 utils.getBaseURL = function() {
 	return document.URL.substring(0, document.URL.lastIndexOf("/"));
 }
+
+utils.initiateHeaderToolTips = function() {
+	var count = 0;
+	var totalPrice = 0;
+	$.getJSON("services/ShoppingCartService.php", function (data) {
+		count = data.length;
+		$(data).each(function (index, element) {
+			totalPrice += (element.price * element.quantity);
+		});
+		var newTitle = jQuery.i18n.map["products.count"] + ": " + count +
+			"<br/>" + jQuery.i18n.map["price.total"] + ": " + totalPrice;
+		$("#header-cart").find("a").attr("title", newTitle);
+		$('[data-toggle="tooltip"]').tooltip({html: true});
+		//this is made in order to refresh the tooltip's title instantaneously
+		$('[data-toggle="tooltip"]').tooltip('hide')
+			.attr('data-original-title', newTitle)
+			.tooltip('fixTitle');
+	});
+}

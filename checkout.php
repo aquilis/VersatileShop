@@ -1,5 +1,5 @@
 <?php
-include 'lib/acc_functions.php';
+include 'lib/utils.php';
 ?>
 <html>
     <head>
@@ -16,7 +16,7 @@ include 'lib/acc_functions.php';
              * Displays the cart items (if any) at page load.
              */
             $(document).ready(function () {
-                languageUtils.applyLabelsToHTML();
+                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
                 loadCartProducts();
 
                 $(".address-switch input").change(function() {

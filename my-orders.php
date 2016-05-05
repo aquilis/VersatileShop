@@ -1,5 +1,9 @@
 <?php
-include 'lib/acc_functions.php';
+include 'lib/utils.php';
+if(!isLogged()) {
+    header("Location: login.php");
+    die();
+}
 ?>
 <html>
     <head>
@@ -8,8 +12,8 @@ include 'lib/acc_functions.php';
         <link href="css/style.css" rel="stylesheet">
         <script src="js/jquery-1.11.0.min.js"></script>
         <script src="js/bootstrap.js"></script>
-        <script src="js/utils.js"></script>
         <script src="js/jquery.i18n.properties.js"></script>
+        <script src="js/utils.js"></script>
         <script src="js/language-utils.js"></script>
         <script>
             var ORDERS_ACTIVE = "active";
@@ -23,13 +27,13 @@ include 'lib/acc_functions.php';
 
                 $(".show-active").click(function() {
                     loadOrders(ORDERS_ACTIVE);
-                })
+                });
                 $(".show-ended").click(function() {
                     loadOrders(ORDERS_ENDED);
-                })
+                });
                 $(".show-all").click(function() {
                     loadOrders(ORDERS_ALL);
-                })
+                });
             });
 
             /**
@@ -120,7 +124,7 @@ include 'lib/acc_functions.php';
                     });
                     $("#items-area").html(itemsHtml);
                 }).done(function (data) {
-                    languageUtils.applyLabelsToHTML();
+                    languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
                 });
             }
         </script>

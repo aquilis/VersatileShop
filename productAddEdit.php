@@ -1,5 +1,5 @@
 <?php
-include 'lib/acc_functions.php';
+include 'lib/utils.php';
 ?>
 <html>
     <head>
@@ -121,7 +121,7 @@ include 'lib/acc_functions.php';
                         });
                     });
                 });
-                languageUtils.applyLabelsToHTML();
+                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
                 $('.file-picker').attr("title", jQuery.i18n.map["only.files.image.directory"]);
                 $('#video-url-field').attr("title", jQuery.i18n.map["paste.here.src.attribute"]);
                 $('[data-toggle="tooltip"]').tooltip();

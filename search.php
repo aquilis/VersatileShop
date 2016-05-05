@@ -1,5 +1,5 @@
 <?php
-include 'lib/acc_functions.php';
+include 'lib/utils.php';
 ?>
 <html>
     <head>
@@ -88,7 +88,7 @@ include 'lib/acc_functions.php';
                         }
                     });
                 });
-                languageUtils.applyLabelsToHTML();
+                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
             });
         </script>
     </head>

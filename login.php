@@ -15,7 +15,7 @@ include_once 'lib/utils.php';
     </head>
     <script>
         $(document).ready(function () {
-            languageUtils.applyLabelsToHTML();
+            languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
             $("#inputUsername").attr("placeholder", jQuery.i18n.map['username']);
             $("#inputPassword").attr("placeholder", jQuery.i18n.map['password']);
             $("#login-btn").click(function() {

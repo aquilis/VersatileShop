@@ -1,8 +1,10 @@
-
 <?php
 /**
  * A moduile containing common utility functions used all across the system
  */
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 /**
  * Gets the connection to the Versatile shop's database.
@@ -80,19 +82,19 @@ function isLogged() {
 /**
  * Logs out the currently logged user.
  * */
-//function logOut() {
-//    if (isLogged()) {
-//        unset($_SESSION['isLogged']);
-//        if (isset($_SESSION['isAdmin'])) {
-//            unset($_SESSION['isAdmin']);
-//        }
-//        if (isset($_SESSION['products'])) {
-//            unset($_SESSION['products']);
-//        }
-//        //TODO is sthis cookie needed?
-//        setcookie('lastLogout', date("d/m/y H:i:s"), 60 * 60 * 24 * 60 + time());
-//    }
-//}
+function logOut() {
+    if (isLogged()) {
+        unset($_SESSION['isLogged']);
+        if (isset($_SESSION['isAdmin'])) {
+            unset($_SESSION['isAdmin']);
+        }
+        if (isset($_SESSION['products'])) {
+            unset($_SESSION['products']);
+        }
+        //TODO is sthis cookie needed?
+        setcookie('lastLogout', date("d/m/y H:i:s"), 60 * 60 * 24 * 60 + time());
+    }
+}
 
 /**
  * Checks if the given username is an admin.
@@ -103,25 +105,5 @@ function isAdmin($username) {
             mysqli_real_escape_string($con, $username) . "') LIMIT 1";
     $query = mysqli_query($con, $sql) or trigger_error("Query Failed: " . mysql_error());
     return mysqli_num_rows($query) == 1;
-}
-
-/**
- * Validates that the user exists in the database.
- * TODO: OBSOLETE METHOD. REMOVE IT.
- * */
-function validateLogin($username, $pass) {
-    $con = getVersatileShopDbConnection();
-    // See if the username and password are valid. 
-    $sql = "SELECT username FROM users  
-            WHERE username = '" . mysqli_real_escape_string($con, $username) .
-            "' AND password = '" . hashPassword($pass, SALT1, SALT2) . "' LIMIT 1";
-    $query = mysqli_query($con, $sql) or trigger_error("Query Failed: " . mysql_error());
-    if (mysqli_num_rows($query) == 1) {
-        mysqli_close($con);
-        return true;
-    } else {
-        mysqli_close($con);
-        return false;
-    }
 }
 ?>

@@ -1,14 +1,5 @@
 <?php
-include 'lib/acc_functions.php';
-
-//XXX: ??? strongly consider removing this.
-if (isset($_GET['action'])) {
-    switch (strtolower($_GET['action'])) {
-        case 'logout':
-            logOut();
-            break;
-    }
-}
+include 'lib/utils.php';
 ?>
 <html>
     <head>
@@ -19,11 +10,12 @@ if (isset($_GET['action'])) {
                     <script src="js/jquery-1.11.0.min.js"></script>
         <script src="js/bootstrap.js"></script>
         <script src="js/jquery.i18n.properties.js"></script>
+        <script src="js/utils.js"></script>
         <script src="js/language-utils.js"></script>
         <script>
             $(document).ready(function () {
                 $(".nav li[id=header-home]").addClass("active");
-                languageUtils.applyLabelsToHTML();
+                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
             });
         </script>
     </head>

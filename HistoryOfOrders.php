@@ -1,5 +1,5 @@
 <?php
-include 'lib/acc_functions.php';
+include 'lib/utils.php';
 ?>
 <html>
     <head>

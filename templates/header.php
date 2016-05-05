@@ -1,18 +1,3 @@
-<script>
-	$("#logout-btn").click(function() {
-		alert("Hello world");
-	});
-
-	/**
-	 * Calls the service for logging out the currently logged user and redirects to home page.
-	 */
-	function logOut() {
-		$.getJSON("services/AuthenticationService.php?action=logout", function (data) {
-				window.location.href = document.URL.substring(0, document.URL.lastIndexOf("/")) + "/index.php"
-		});
-	}
-</script>
-
 <nav class="navbar navbar-inverse" role="navigation">
 	  <div class="navbar-header">
 	    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -27,8 +12,12 @@
 	    <ul class="nav navbar-nav">
 	      <li id="header-home"><a href="index.php"><span i18n_label="home"></span></a></li>
 	      <li id="header-shop"><a href="shop.php"><span class="glyphicon glyphicon glyphicon-tags"></span><span i18n_label="shop"></span></a></li>
-	      <li id="header-cart"><a href="shopping-cart.php"><span class="glyphicon glyphicon-shopping-cart"></span><span i18n_label="shopping.cart"></span></a></li>
-		  <li id="header-orders"><a href="my-orders.php"><span class="glyphicon glyphicon-list-alt">  </span><span i18n_label="my.orders.heading"></span></a></li>
+			<?php
+			if(isLogged())  {
+				echo  "<li id=\"header-cart\"><a href=\"shopping-cart.php\"  data-toggle=\"tooltip\" data-placement=\"bottom\"><span class=\"glyphicon glyphicon-shopping-cart\"></span><span i18n_label=\"shopping.cart\"></span></a></li>" .
+					  "<li id=\"header-orders\"><a href=\"my-orders.php\"><span class=\"glyphicon glyphicon-list-alt\">  </span><span i18n_label=\"my.orders.heading\"></span></a></li>";
+			}
+			?>
 	      <li id="header-search"><a href="search.php"><span class="glyphicon glyphicon-search"></span><span i18n_label="search"></span></a></li>
 	    </ul>
 	    <ul class="nav navbar-nav navbar-right">

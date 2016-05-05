@@ -1,5 +1,9 @@
 <?php
-include 'lib/acc_functions.php';
+include 'lib/utils.php';
+if(!isLogged()) {
+    header("Location: login.php");
+    die();
+}
 ?>
 <html>
     <head>
@@ -84,13 +88,14 @@ include 'lib/acc_functions.php';
                             url: "services/ShoppingCartService.php?productID=" + productID,
                             type: "DELETE",
                         }).done(function (msg) {
+                            utils.initiateHeaderToolTips();
                             //reload the shopping cart after deleting a product
                             loadShoppingCart();
                             var html = "<div class=\"alert alert-success\" role=\"alert\">" + jQuery.i18n.map[msg.trim()] + "</div>";
                             utils.displayAndFadeOutResultsPanel("result-panel", html, "fast");
                         });
                     });
-                    languageUtils.applyLabelsToHTML();
+                    languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
                 });
             }
         </script>
