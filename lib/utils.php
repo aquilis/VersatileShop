@@ -107,7 +107,7 @@ function isAdmin($username) {
 
 /**
  * Validates that the user exists in the database.
- * TODO: Move this to the login model, when ready
+ * TODO: OBSOLETE METHOD. REMOVE IT.
  * */
 function validateLogin($username, $pass) {
     $con = getVersatileShopDbConnection();

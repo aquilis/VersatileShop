@@ -221,7 +221,6 @@ abstract class BaseDAO {
         $query = "SELECT * FROM " . $this->dataTable . "
                  WHERE " . $this->primaryKeyColumnName . " = '" . mysqli_real_escape_string($this->dbConnection, $id) . "' LIMIT 1;";
         $result = mysqli_query($this->dbConnection, $query) or trigger_error("Query Failed: " . mysql_error());
-        //wrap ths student data inside an associative array
         $data = mysqli_fetch_assoc($result);
         return $data;
     }

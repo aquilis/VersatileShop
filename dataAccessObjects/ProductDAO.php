@@ -39,13 +39,26 @@ class ProductDAO extends BaseDAO {
     }
 
     /**
+     * Gets the quantity in stock for the given product.
+     *
+     * @param $id is the id of the product
+     * @return the quantity in stock
+     */
+    public function getQuantityInStock($id) {
+        $criteria = array("productID" => $id);
+        $productFields = array("quantityInStock");
+        $product = $this->getByCriteria($productFields, $criteria, "", "");
+        return $product[0]["quantityInStock"];
+    }
+
+    /**
      * 	Gets all product details for the product with the given ID, joining the data from the related data tables too 
      * 	(videos, images, etc).
      * */
     public function getProduct($id) {
         $criteria = array("productID" => $id);
         //get the product details
-        $productFields = array("productID", "title", "description", "price", "manufacturer", "dateAdded");
+        $productFields = array("productID", "title", "description", "price", "manufacturer", "dateAdded", "quantityInStock");
         $product = $this->getByCriteria($productFields, $criteria, "", "");
         if (!isset($product[0])) {
             return array();
@@ -61,6 +74,19 @@ class ProductDAO extends BaseDAO {
         $product["images"] = $images;
         $product["videos"] = $videos;
         return $product;
+    }
+
+    /**
+     * Decrements the quantity in stock of the product with the given ID.
+     *
+     * @param $productID is the product ID
+     * @param $decrementWith is the quantity to decrement with
+     */
+    public function decrementQuantity($productID, $decrementWith) {
+        $sqlQuery = "UPDATE " . $this->dataTable . " SET quantityInStock = quantityInStock - " .
+            mysqli_real_escape_string($this->dbConnection, $decrementWith) . " WHERE " .
+            $this->primaryKeyColumnName . "=" . mysqli_real_escape_string($this->dbConnection, $productID) . ";";
+        mysqli_query($this->dbConnection, $sqlQuery) or trigger_error("Query Failed: " . mysql_error());
     }
 
     /**

@@ -15,7 +15,7 @@ class UsersDAO extends BaseDAO {
 
     function __construct($dataTable) {
         parent::__construct($dataTable);
-        $this->addressesDAO = new AdressesDAO('addresses');
+        $this->addressesDAO = new AddressesDAO('addresses');
     }
 
     /**

@@ -107,8 +107,8 @@ include 'lib/acc_functions.php';
                 <div id="items-area" class="row">			
                 </div>
                 <div id="cart-buttons">
+                    <a href="checkout.php"><button class="btn btn-lg btn-primary"> <span class="glyphicon glyphicon-hand-right"></span> <span i18n_label="to.checkout"></span></button></a>
                     <button id="empty-cart-btn" class="btn btn-lg btn-warning"><span class="glyphicon glyphicon-remove"></span> <span i18n_label="empty.cart"></span></button>
-                    <button class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-usd"></span> <span i18n_label="to.checkout"></span></button>
                 </div>
             </div> 
         </div>

@@ -276,3 +276,12 @@ ul.ui-autocomplete.ui-menu li:hover {
 .shipping-address-form {
     width: 50%;
 }
+
+.order-panel {
+    width: 90%;
+}
+
+.orders-state-filter {
+    margin-bottom: 24px;
+    margin-top: 24px;
+}

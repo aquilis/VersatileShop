@@ -39,18 +39,29 @@ include 'lib/acc_functions.php';
                             phone: $("#phone-field").val()
                         };
                     }
-                    //if the front-end validation passes, make the post request to the server
                     $.post("services/OrdersService.php", orderDetails).done(function (data) {
                         var serverValidationResult = data;
                         if (serverValidationResult.status === false) {
-                            highlightErrors(serverValidationResult);
+                            if (serverValidationResult.authenticationFailed === true) {
+                                window.location.href = utils.getBaseURL() + "/login.php";
+                            } else if (serverValidationResult.errorsMapping) {
+                                highlightProductErrors(serverValidationResult);
+                            } else {
+                                highlightAddressErrors(serverValidationResult);
+                            }
                             return;
+                        } else {
+                            window.location.href = utils.getBaseURL() + "/my-orders.php";
                         }
                     });
                 });
 
             });
 
+            /**
+             * Loads and displays all products from the shopping cart so that the user can have a final glimpse of what
+             * they are about to order and pay for.
+             */
             function loadCartProducts() {
                 utils.displayAjaxLoader("items-area", "Loading...", false);
                 $.getJSON("services/ShoppingCartService.php", function (data) {
@@ -75,7 +86,28 @@ include 'lib/acc_functions.php';
                 })
             };
 
-            function highlightErrors(validationResult) {
+            /**
+             * Highligths the product-related errors such as not enough in stock, not available.
+             */
+            function highlightProductErrors(validationResult) {
+                var errors = "";
+                if(validationResult.errorsMapping) {
+                    $.each(validationResult.errorsMapping, function(productTitle, errorMessageCode) {
+                        errors+= jQuery.i18n.map[errorMessageCode] + " " +  productTitle  + "<br/>";
+                    });
+                }
+                var html = "<div class=\"alert alert-danger\" role=\"alert\"><span class=\"glyphicon glyphicon-remove\"></span> " +
+                    errors + "</div>";
+                var resultPanel = $("#product-result-panel");
+                resultPanel.html(html);
+                //scroll  to top of page, so that the user can see the errors
+                window.scrollTo(0,0);
+            }
+
+            /**
+             * Highlights the address validation errors in the specified error section.
+             */
+            function highlightAddressErrors(validationResult) {
                 if (validationResult.status === true) {
                     return;
                 }
@@ -105,6 +137,7 @@ include 'lib/acc_functions.php';
         <div id="mainColumn">
             <div id="contentArea">
                 <h1><span class="glyphicon glyphicon-shopping-cart"></span><span i18n_label="confirm.order.details.heading"></span></h1>
+                <div id="product-result-panel"></div>
                 <div id="orders-section" class="well row">
                 </div>
                 <div id="address-section" class=" well row">
@@ -134,7 +167,7 @@ include 'lib/acc_functions.php';
                 </div>
                 <div id="bottom-buttons">
                     <button id="confirm-btn" class="btn btn-lg btn-primary"> <span i18n_label="confirm.order"></span></button>
-                    <button class="btn btn-lg btn-default"><span i18n_label="button.back"></span></button>
+                    <a href="shopping-cart.php"><button class="btn btn-lg btn-default"><span i18n_label="button.back"></span></button></a>
                 </div>
             </div> 
         </div>

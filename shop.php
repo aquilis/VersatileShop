@@ -80,6 +80,7 @@ include 'lib/acc_functions.php';
                             "<p class=\"product-section\"><b><span i18n_label=\"added.on\"></span>:</b></br>" + data.dateAdded + "</p>" +
                             "<p class=\"product-section\"><b><span i18n_label=\"manufacturer\"></span>:</b></br>" + data.manufacturer + "</p>" +
                             "<p class=\"product-section\"><b><span i18n_label=\"description\"></span>:</b></br>" + data.description + "</p>" +
+                            "<p class=\"product-section\"><b><span i18n_label=\"quantity.in.stock\"></span>:</b></br>" + data.quantityInStock + "</p>" +
                             "<p class=\"product-section\"><b><span i18n_label=\"price\"></span>:</b>" + data.price + "$</p>" +
                             "<p class=\"product-section\"><button id=\"add-to-cart-btn\"productID='" + data.productID +
                                 "' class='btn-lg btn-primary'><span class='glyphicon glyphicon-shopping-cart'></span><span i18n_label=\"add.to.cart\"></span></button>" +

@@ -28,6 +28,7 @@
 	      <li id="header-home"><a href="index.php"><span i18n_label="home"></span></a></li>
 	      <li id="header-shop"><a href="shop.php"><span class="glyphicon glyphicon glyphicon-tags"></span><span i18n_label="shop"></span></a></li>
 	      <li id="header-cart"><a href="shopping-cart.php"><span class="glyphicon glyphicon-shopping-cart"></span><span i18n_label="shopping.cart"></span></a></li>
+		  <li id="header-orders"><a href="my-orders.php"><span class="glyphicon glyphicon-list-alt">  </span><span i18n_label="my.orders.heading"></span></a></li>
 	      <li id="header-search"><a href="search.php"><span class="glyphicon glyphicon-search"></span><span i18n_label="search"></span></a></li>
 	    </ul>
 	    <ul class="nav navbar-nav navbar-right">

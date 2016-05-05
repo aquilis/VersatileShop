@@ -60,6 +60,7 @@ function logOut() {
 /**
  * 	Validates that the user exists in the database.
  * */
+//TODO obsolete function
 function validateLogin($username, $pass) {
     //connect to the 'login' DB
     $con = mysqli_connect("localhost", "root", "", "db_versatile_shop");
