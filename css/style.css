@@ -285,3 +285,14 @@ ul.ui-autocomplete.ui-menu li:hover {
     margin-bottom: 24px;
     margin-top: 24px;
 }
+
+.orders-state-filter {
+    margin-bottom: 24px;
+    margin-top: 24px;
+}
+
+.widget-placeholder {
+    border: solid;
+    border-radius: 1px;
+    min-height: 256px;
+}

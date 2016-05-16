@@ -157,6 +157,19 @@ utils.getCurrentDate = function() {
 	return date + "/" + month + "/" + year;
 }
 
+utils.parseDate = function(inputDate) {
+	var date = inputDate.getDate();
+	if (date < 10) {
+		date = "0" + date;
+	}
+	var month = inputDate.getMonth() + 1;
+	if (month < 10) {
+		month = "0" + month;
+	}
+	var year = inputDate.getFullYear();
+	return date + "." + month + "." + year;
+}
+
 /**
  * Generates a URL (query) parameter with the given name, taking its value from
  * the input field with id - inputTextId.

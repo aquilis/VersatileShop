@@ -12,7 +12,7 @@ languageUtils.applyLabelsToHTML = function(callbackFunction) {
     jQuery.i18n.properties({
         name: 'labels',
         path:'bundle/',
-        language:'en',
+        language:'bg',
         mode:'map',
         callback: function() {
             if(typeof(callbackFunction) !== "undefined" ) {
