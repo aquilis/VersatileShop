@@ -16,6 +16,10 @@
 			if(isLogged())  {
 				echo  "<li id=\"header-cart\"><a href=\"shopping-cart.php\"  data-toggle=\"tooltip\" data-placement=\"bottom\"><span class=\"glyphicon glyphicon-shopping-cart\"></span><span i18n_label=\"shopping.cart\"></span></a></li>" .
 					  "<li id=\"header-orders\"><a href=\"my-orders.php\"><span class=\"glyphicon glyphicon-list-alt\">  </span><span i18n_label=\"my.orders.heading\"></span></a></li>";
+
+				if(isset($_SESSION['isAdmin'])) {
+					echo  "<li id=\"header-dashboard\"><a href=\"admin-dashboard.php\"><span class=\"glyphicon glyphicon-signal\">  </span><span i18n_label=\"admin.dashboard.heading\"></span></a></li>";
+				}
 			}
 			?>
 	      <li id="header-search"><a href="search.php"><span class="glyphicon glyphicon-search"></span><span i18n_label="search"></span></a></li>

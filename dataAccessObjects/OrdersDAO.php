@@ -77,6 +77,55 @@ class OrdersDAO extends BaseDAO {
     }
 
     /**
+     * Gets the revenue aggregated by time.
+     *
+     * @param $timePeriod is the time period
+     * @return associative array with the aggregated data
+     */
+    public function getRevenueByTime($timePeriod) {
+        $aggregateAttribute = "orders.orderDate";
+        $groupBy = "orderDate";
+        if(isset($timePeriod) && $timePeriod == $this::MONTH) {
+            $aggregateAttribute = "month(orders.orderDate)";
+            $groupBy = "month(orderDate)";
+        } else if (isset($timePeriod) && $timePeriod == $this::YEAR) {
+            $aggregateAttribute = "year(orders.orderDate)";
+            $groupBy = "year(orderDate)";
+        }
+        $sqlQuery = "SELECT ". $aggregateAttribute . " , (COUNT(orders.orderID) * orders_products.quantity * orders_products.historicPrice)
+                        AS revenue FROM orders inner join orders_products
+                        on orders.orderID=orders_products.orderID
+                        group by " . $groupBy .";";
+
+        $result = mysqli_query($this->dbConnection, $sqlQuery) or trigger_error("Query Failed: " . mysql_error());
+        $data = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            array_push($data, $row);
+        }
+        return $data;
+    }
+
+    /**
+     * Gets the market share by product.
+     *
+     * @param $timePeriod is the time period
+     * @return array is the associative array
+     */
+    public function getMostBoughtProduct() {
+        $sqlQuery = "SELECT products.productID, products.title, COUNT(orders.orderID) AS productOrdersCount
+                    FROM products
+                    inner join orders_products on products.productID=orders_products.productID
+                    inner JOIN orders on orders.orderID=orders_products.orderID
+                    group by productID";
+        $result = mysqli_query($this->dbConnection, $sqlQuery) or trigger_error("Query Failed: " . mysql_error());
+        $data = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            array_push($data, $row);
+        }
+        return $data;
+    }
+
+    /**
      * Gets all orders aggregated by the given time period.
      *
      * @param $timePeriod is the time period to group by

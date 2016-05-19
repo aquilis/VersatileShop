@@ -292,7 +292,9 @@ ul.ui-autocomplete.ui-menu li:hover {
 }
 
 .widget-placeholder {
-    border: solid;
-    border-radius: 1px;
     min-height: 256px;
+}
+
+.dashboard-widget-wrapper .dropdown-menu a {
+    cursor: pointer;
 }

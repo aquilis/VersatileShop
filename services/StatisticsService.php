@@ -21,6 +21,17 @@ if ($requestMethod == "GET") {
         header('Content-Type: application/json');
         echo json_encode($response);
         return;
+    } else if ($statisticsType == "most-bought-products") {
+        $response = $ordersDAO->getMostBoughtProduct();
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        return;
+    }  else if ($statisticsType == "revenue-by-time") {
+        $timeInterval = filter_input(INPUT_GET, "period", FILTER_SANITIZE_STRING);
+        $response = $ordersDAO->getRevenueByTime($timeInterval);
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        return;
     }
 } else if ($requestMethod == "POST") {
 }

@@ -80,23 +80,6 @@ function isLogged() {
 }
 
 /**
- * Logs out the currently logged user.
- * */
-//function logOut() {
-//    if (isLogged()) {
-//        unset($_SESSION['isLogged']);
-//        if (isset($_SESSION['isAdmin'])) {
-//            unset($_SESSION['isAdmin']);
-//        }
-//        if (isset($_SESSION['products'])) {
-//            unset($_SESSION['products']);
-//        }
-//        //TODO is sthis cookie needed?
-//        setcookie('lastLogout', date("d/m/y H:i:s"), 60 * 60 * 24 * 60 + time());
-//    }
-//}
-
-/**
  * Checks if the given username is an admin.
  * */
 function isAdmin($username) {

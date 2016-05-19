@@ -1,6 +1,6 @@
 <?php
 include 'lib/utils.php';
-if(!isLogged()) {
+if(!isLogged() || !isset($_SESSION['isAdmin'])) {
     header("Location: login.php");
     die();
 }
@@ -13,6 +13,8 @@ if(!isLogged()) {
         <script src="js/jquery-1.11.0.min.js"></script>
         <script src="js/jquery.flot.js"></script>
         <script src="js/jquery.flot.categories.js"></script>
+        <script src="js/jquery.flot.navigate.js"></script>
+        <script src="js/jquery.flot.pie.js"></script>
         <script src="js/bootstrap.js"></script>
         <script src="js/jquery.i18n.properties.js"></script>
         <script src="js/utils.js"></script>
@@ -25,9 +27,11 @@ if(!isLogged()) {
             var TIME_INTERVAL_YEAR = "year";
 
             $(document).ready(function () {
-                $(".nav li[id=header-orders]").addClass("active");
+                $(".nav li[id=header-dashboard]").addClass("active");
                 languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
                 loadOrdersInTimeWidget(TIME_INTERVAL_DAY);
+                loadMostBoughtProductWidget();
+                loadRevenueByTimeWidget(TIME_INTERVAL_DAY);
             });
 
 
@@ -44,15 +48,104 @@ if(!isLogged()) {
                 }
             };
 
+            function loadMostBoughtProductWidget() {
+                $("#most-bought-product").html('<img id=\"ajax-loader\" src=\"images/ajax-loader.gif\"><br> Loading... </img><br>');
+                $.getJSON("services/StatisticsService.php?statisticsType=most-bought-products", function (data) {
+                    $("#most-bought-product").html('');
+                    var chartData = [];
+                    $(data).each(function (index, element) {
+                        chartData.push({
+                            label: element.title,
+                            data: element.productOrdersCount
+                        });
+                    });
+                    $.plot("#most-bought-product", chartData, {
+                        series: {
+                            pie: {
+                                show: true,
+                                label: {
+                                    show: true
+                                }
+                            }
+                        },
+                        grid: {
+                            hoverable: true,
+                            clickable: true
+                        },
+                        legend: {
+                            show: false
+                        }
+                    });
+                });
+            };
+
+            function loadRevenueByTimeWidget(timePeriod) {
+                $(".revenue-by-time-period-picker #time-period-date").click(function() {
+                    loadRevenueByTimeWidget(TIME_INTERVAL_DAY);
+                });
+                $(".revenue-by-time-period-picker #time-period-month").click(function() {
+                    loadRevenueByTimeWidget(TIME_INTERVAL_MONTH);
+                });
+                $(".revenue-by-time-period-picker #time-period-year").click(function() {
+                    loadRevenueByTimeWidget(TIME_INTERVAL_YEAR);
+                });
+                $("#revenue-by-time").html('<img id=\"ajax-loader\" src=\"images/ajax-loader.gif\"><br> Loading... </img><br>');
+                $.getJSON("services/StatisticsService.php?statisticsType=revenue-by-time&period="+ timePeriod , function (data) {
+                    $("#revenue-by-time").html('');
+                    var chartData = [];
+                    $(data).each(function (index, element) {
+                        var attribute = "";
+                        if(timePeriod === TIME_INTERVAL_DAY) {
+                            attribute = element["orderDate"];
+                        } else if (timePeriod === TIME_INTERVAL_MONTH) {
+                            attribute = element["month(orders.orderDate)"];
+                        } else if (timePeriod === TIME_INTERVAL_YEAR) {
+                            attribute = element["year(orders.orderDate)"];
+                        }
+                        chartData.push([evaluateDateInternal(attribute, timePeriod), parseInt(element.revenue)]);
+                    });
+                    $.plot("#revenue-by-time", [chartData], {
+                        series: {
+                            bars: {
+                                show: true,
+                                align: "center"
+                            }
+                        },
+                        grid: {
+                            hoverable: true,
+                            clickable: true
+                        },
+                        legend: {
+                            labelBoxBorderColor: "none",
+                            position: "right"
+                        },
+                        xaxis: {
+                            mode: "categories",
+                            tickLength: 0
+                        },
+                        yaxis: {
+                            panRange: false,
+                            minTickSize: 1,
+                            tickDecimals: 0
+                        },
+                        zoom: {
+                            interactive: true
+                        },
+                        pan: {
+                            interactive: true
+                        }
+                    });
+                });
+            };
 
             function loadOrdersInTimeWidget(timePeriod) {
-                $("#time-period-date").click(function() {
+                $(".orders-by-time-period-picker #time-period-date").click(function() {
                     loadOrdersInTimeWidget(TIME_INTERVAL_DAY);
                 });
-                $("#time-period-month").click(function() {
+                $(".orders-by-time-period-picker #time-period-month").click(function() {
                     loadOrdersInTimeWidget(TIME_INTERVAL_MONTH);
                 });
-                $("#time-period-year").click(function() {
+                $(".orders-by-time-period-picker #time-period-year").click(function() {
                     loadOrdersInTimeWidget(TIME_INTERVAL_YEAR);
                 });
                 $("#orders-in-time").html('<img id=\"ajax-loader\" src=\"images/ajax-loader.gif\"><br> Loading... </img><br>');
@@ -96,6 +189,12 @@ if(!isLogged()) {
                         yaxis: {
                             minTickSize: 1,
                             tickDecimals: 0
+                        },
+                        zoom: {
+                            interactive: true
+                        },
+                        pan: {
+                            interactive: true
                         }
                     });
                 }).done(function (data) {
@@ -116,32 +215,48 @@ if(!isLogged()) {
                 <div id="items-area">
                     <div class="row">
                         <div class="col-md-6">
-                            <h3><span i18n_label="orders.in.time"></span>
-                                <div style= "display: inline" class="dropdown">
+                            <div class="dashboard-widget-wrapper">
+                                <h3 style="display: inline"><span i18n_label="orders.in.time"></span></h3>
+                                <div style= "display: inline" class="dropdown orders-by-time-period-picker">
                                     <button class="btn btn-default dropdown-toggle" style="display: inline" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         <span i18n_label="group.by"></span>
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <li><a id="time-period-date" href="#"><span i18n_label="time.interval.date"></span></a></li>
-                                        <li><a id="time-period-month" href="#"><span i18n_label="time.interval.month"></span></a></li>
-                                        <li><a id="time-period-year" href="#"><span i18n_label="time.interval.year"></span></a></li>
+                                        <li><a id="time-period-date"><span i18n_label="time.interval.date"></span></a></li>
+                                        <li><a id="time-period-month"><span i18n_label="time.interval.month"></span></a></li>
+                                        <li><a id="time-period-year"><span i18n_label="time.interval.year"></span></a></li>
                                     </ul>
-                                </div></h3>
-
-                            <div id="orders-in-time" class="widget-placeholder">
+                                </div>
+                                <div id="orders-in-time" class="widget-placeholder">
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div id="placeholder" class="widget-placeholder">
-                                <img id="ajax-loader" src="images/ajax-loader.gif"><br> Loading... </img><br>
+                            <div class="dashboard-widget-wrapper">
+                                <h3><span i18n_label="market.share.by.product"></span></h3>
+                                <div id="most-bought-product" class="widget-placeholder">
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <div id="placeholder" class="widget-placeholder">
-                                <img id="ajax-loader" src="images/ajax-loader.gif"><br> Loading... </img><br>
+                            <div class="dashboard-widget-wrapper">
+                                <h3 style="display: inline"><span i18n_label="revenue.by.time"></span></h3>
+                                <div style= "display: inline" class="dropdown revenue-by-time-period-picker">
+                                    <button class="btn btn-default dropdown-toggle" style="display: inline" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <span i18n_label="group.by"></span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        <li><a id="time-period-date"><span i18n_label="time.interval.date"></span></a></li>
+                                        <li><a id="time-period-month"><span i18n_label="time.interval.month"></span></a></li>
+                                        <li><a id="time-period-year"><span i18n_label="time.interval.year"></span></a></li>
+                                    </ul>
+                                </div>
+                                <div id="revenue-by-time" class="widget-placeholder">
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
