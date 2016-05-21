@@ -32,6 +32,11 @@ if ($requestMethod == "GET") {
         header('Content-Type: application/json');
         echo json_encode($response);
         return;
+    } else if ($statisticsType == "supplies-by-product") {
+        $response = $ordersDAO->getProductsBySupply();
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        return;
     }
 } else if ($requestMethod == "POST") {
 }

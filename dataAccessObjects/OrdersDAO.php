@@ -77,6 +77,22 @@ class OrdersDAO extends BaseDAO {
     }
 
     /**
+     * Gets the count of supplies for each product.
+     *
+     * @return array with the retrieved data
+     */
+    public function getProductsBySupply() {
+        $sqlQuery = "select products.productID, products.title, COUNT(supplies.supplyID) as suppliesCount
+                    from supplies, products WHERE supplies.productID=products.productID GROUP by products.productID";
+        $result = mysqli_query($this->dbConnection, $sqlQuery) or trigger_error("Query Failed: " . mysql_error());
+        $data = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            array_push($data, $row);
+        }
+        return $data;
+    }
+
+    /**
      * Gets the revenue aggregated by time.
      *
      * @param $timePeriod is the time period

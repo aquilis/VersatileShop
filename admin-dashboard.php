@@ -32,6 +32,7 @@ if(!isLogged() || !isset($_SESSION['isAdmin'])) {
                 loadOrdersInTimeWidget(TIME_INTERVAL_DAY);
                 loadMostBoughtProductWidget();
                 loadRevenueByTimeWidget(TIME_INTERVAL_DAY);
+                loadSuppliesByProductWidget();
             });
 
 
@@ -48,18 +49,25 @@ if(!isLogged() || !isset($_SESSION['isAdmin'])) {
                 }
             };
 
-            function loadMostBoughtProductWidget() {
-                $("#most-bought-product").html('<img id=\"ajax-loader\" src=\"images/ajax-loader.gif\"><br> Loading... </img><br>');
-                $.getJSON("services/StatisticsService.php?statisticsType=most-bought-products", function (data) {
-                    $("#most-bought-product").html('');
+            /**
+             * Plots a pie chart in the given element, according to the passed params.
+             *
+             * @param widgetElement is the parent element where to draw it
+             * @param statisticsType is the statistic type that will be requested from the serber
+             * @param labelAttributeName is the attribute name that will be taken as labels for the pie sections
+             * @param dataAttributeName is the attribute name that will be taken as data for the pie sections
+             */
+            function plotPieChart(widgetElement, statisticsType, labelAttributeName, dataAttributeName) {
+                $.getJSON("services/StatisticsService.php?statisticsType=" + statisticsType, function (data) {
+                    widgetElement.html('');
                     var chartData = [];
                     $(data).each(function (index, element) {
                         chartData.push({
-                            label: element.title,
-                            data: element.productOrdersCount
+                            label: element[labelAttributeName],
+                            data: element[dataAttributeName]
                         });
                     });
-                    $.plot("#most-bought-product", chartData, {
+                    $.plot("#" + widgetElement.attr('id'), chartData, {
                         series: {
                             pie: {
                                 show: true,
@@ -77,6 +85,18 @@ if(!isLogged() || !isset($_SESSION['isAdmin'])) {
                         }
                     });
                 });
+            };
+
+            function loadSuppliesByProductWidget() {
+                var widgetElement = $("#supplies-by-product");
+                widgetElement.html('<img id=\"ajax-loader\" src=\"images/ajax-loader.gif\"><br> Loading... </img><br>');
+                plotPieChart(widgetElement, "supplies-by-product",  "title", "suppliesCount");
+            };
+
+            function loadMostBoughtProductWidget() {
+                var widgetElement =  $("#most-bought-product");
+                $("#most-bought-product").html('<img id=\"ajax-loader\" src=\"images/ajax-loader.gif\"><br> Loading... </img><br>');
+                plotPieChart(widgetElement, "most-bought-products",  "title", "productOrdersCount");
             };
 
             function loadRevenueByTimeWidget(timePeriod) {
@@ -260,8 +280,10 @@ if(!isLogged() || !isset($_SESSION['isAdmin'])) {
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div id="placeholder" class="widget-placeholder">
-                                <img id="ajax-loader" src="images/ajax-loader.gif"><br> Loading... </img><br>
+                            <div class="dashboard-widget-wrapper">
+                                <h3><span i18n_label="supplies.by.product"></span></h3>
+                                <div id="supplies-by-product" class="widget-placeholder">
+                                </div>
                             </div>
                         </div>
                     </div>
