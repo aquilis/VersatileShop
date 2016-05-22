@@ -10,5 +10,13 @@ include_once 'VideosDAO.php';
  * 
  * */
 class CategoriesDAO extends BaseDAO {
+
+    public function getAllCategories($term) {
+        if(isset($term) && strlen($term) > 0) {
+            $criteria = array("categoryName" => "*" . $term . "*");
+            return $this->getByCriteria(array("categoryID" , "categoryName"), $criteria , "", "");
+        }
+        return $this->getProjectionOf(array("categoryID" , "categoryName"));
+    }
 }
 ?>

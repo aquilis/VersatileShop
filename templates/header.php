@@ -22,7 +22,6 @@
 				}
 			}
 			?>
-	      <li id="header-search"><a href="search.php"><span class="glyphicon glyphicon-search"></span><span i18n_label="search"></span></a></li>
 	    </ul>
 	    <ul class="nav navbar-nav navbar-right">
 	      <?php 

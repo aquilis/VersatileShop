@@ -110,10 +110,17 @@ class ProductDAO extends BaseDAO {
     }
 
     /**
-     * 	Gets all titles of all available products.
-     * */
-    public function getAllProductTitles() {
-        return $this->getByCriteria(array("title"), array("available" => "1"), "", "");
+     * Gets all ids and titles of all available products.
+     *
+     * @param $term is the search term that the title should match
+     * @return array of the returned results
+     */
+    public function getAllProductTitles($term) {
+        $criteria = array("available" => "1");
+        if(isset($term) && strlen($term) > 0) {
+            $criteria["title"] = "*" . $term . "*";
+        }
+        return $this->getByCriteria(array("productID" , "title"), $criteria , "", "");
     }
 
     /*     * **** PRIVATE METHODS ***** */

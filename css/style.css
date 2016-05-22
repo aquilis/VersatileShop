@@ -298,3 +298,12 @@ ul.ui-autocomplete.ui-menu li:hover {
 .dashboard-widget-wrapper .dropdown-menu a {
     cursor: pointer;
 }
+
+#shop-search-form {
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+
+#shop-search-form select {
+    width: 100%;
+}

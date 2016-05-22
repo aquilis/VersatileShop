@@ -2,7 +2,7 @@
 	<div id="panel">
 		<div class="panel-inner">
 			<p>Developed and designed by: V.Tsonev /Aquiliz/&copy</p>
-			<p>2014 All right reserved</p>
+			<p>2016 All right reserved</p>
 		</div>
 		<div class="panel-inner">
 			<a href="#"><img src="images/fb.png" alt="facebook"/></a>

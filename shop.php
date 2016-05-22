@@ -6,11 +6,13 @@ include 'lib/utils.php';
     <title>Shop</title>
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/select2.css" rel="stylesheet">
     <script src="js/jquery-1.11.0.min.js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/jquery.i18n.properties.js"></script>
     <script src="js/language-utils.js"></script>
+    <script src="js/select2.js"></script>
     <script>
         $(document).ready(function () {
             utils.displayAjaxLoader("items-area", "Loading...", false);
@@ -21,41 +23,103 @@ include 'lib/utils.php';
                 loadProduct(id);
             } else {
                 $(".nav li[id=header-shop]").addClass("active");
-                displayAllProducts();
+                displayProductsByCriteria({});
             }
+
+            var titlePickerOptions = getAutocompleteOptions("services/SearchService.php?action=allTitles", "productID", "title");
+            $(".search-product-by-title").select2(
+                titlePickerOptions
+            );
+
+            var categoryPickerOptions = getAutocompleteOptions("services/SearchService.php?action=allCategories", "categoryID", "categoryName");
+            $(".search-product-by-category").select2(
+                categoryPickerOptions
+            );
+
+            $("#search-btn").click(function() {
+                utils.displayAjaxLoader("items-area", "Loading...", false);
+                var productID = $(".search-product-by-title").val() || "";
+                var categoryID = $(".search-product-by-category").val() || "";
+                var description = $(".search-by-description").val();
+                var criteria = [];
+                if(productID.length > 0) {
+                    criteria.push({property: "productID", value: productID});
+                }
+                if(categoryID.length > 0) {
+                    criteria.push({property: "categoryID", value: categoryID});
+                }
+                if(description.length > 0) {
+                    criteria.push({property: "description", value: description});
+                }
+                displayProductsByCriteria(criteria);
+            });
         });
 
-        /**
-         * Displays all available products in a bootstrap grid.
-         **/
-        function displayAllProducts() {
-            $.getJSON("services/ShopService.php", function (data) {
+        function getAutocompleteOptions(serviceURL, idAttributeName, textAttributeName) {
+            return {
+                ajax: {
+                    url: serviceURL,
+                    dataType: 'json',
+                    tags: true,
+                    minimumInputLength: 0,
+                    data: function (params) {
+                        var data = {};
+                        if(params.term && params.term.length > 0) {
+                            data.term = params.term;
+                        }
+                        return data;
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function(element) {
+                                return { id: element[idAttributeName], text: element[textAttributeName] };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            }
+        };
+
+        function displayProductsByCriteria(criteria) {
+            //first build the query params that will be attached to the URL
+            var queryParams = "";
+            $(criteria).each(function (index, element) {
+                queryParams += "&" + element.property + "=" + element.value;
+            });
+            //make the get request and display the result
+            $.getJSON("services/SearchService.php?action=search" + queryParams, function (data) {
                 var itemsHtml = "";
-                $(data).each(function (index, element) {
-                    itemsHtml +=
+                if (data.length === 0) {
+                    itemsHtml = "<h4>" + jQuery.i18n.map['search.page.no.results'] + "</h4>";
+                } else {
+                    $(data).each(function (index, element) {
+                        var productLandingPage = utils.getBaseURL() + "/shop.php?productID=" + element.productID;
+                        itemsHtml +=
                             "<div class=\"col-md-3 product-tile\">" +
-                            "<a style='cursor: pointer; text-decoration: none;' onclick='loadProduct(" + element.productID + ");'>" +
+                            "<a href='" + productLandingPage + "' style='cursor: pointer; text-decoration: none;'>" +
                             "<div class=\"thumbnail\">" +
                             "<img src=\"" + element.thumbnailPath + "\">" +
                             "<div class=\"caption\">" +
                             "<h3>" + element.title + "</h3>" +
                             "<p>" + element.description + "...</p>" +
-                            "<p><b><span i18n_label=\"price\"></span>: " + element.price + "$</b></p>" +
-                            "<p><button productID='" + element.productID + "' class='btn btn-primary'><span i18n_label=\"see.more\"></span></button></p>" +
+                            "<p><b>" + jQuery.i18n.map['price'] + ": " + element.price + "$</b></p>" +
+                            "<p><button productID='" + element.productID + "' class='btn btn-primary'>" + jQuery.i18n.map['see.more'] + "</button></p>" +
                             "</div>" +
                             "</div>" +
                             "</a>" +
                             "</div>";
 
-                });
+                    });
+                }
                 $("#items-area").html(itemsHtml);
-                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
             }).done(function () {
                 $(".product-tile .btn-primary").click(function () {
                     loadProduct($(this).attr("productID"));
-                })
-            })
-        }
+                });
+                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
+            });
+        };
 
         /**
         * Loads the data for the product with the given ID, displays it in the page and attaches 
@@ -219,12 +283,33 @@ include 'lib/utils.php';
             <?php
             if (isset($_SESSION['isAdmin'])) {
                 ?>
-                <a href="productAddEdit.php"><button type="button" class="btn btn-lg btn-info"><span class="glyphicon glyphicon-plus"></span>Add product</button></a>
-                <a href="HistoryOfOrders.php"><button type="button" class="btn btn-lg btn-info">History of orders</button></a>
+                <a href="productAddEdit.php"><button type="button" class="btn btn-lg btn-info"><span class="glyphicon glyphicon-plus">
+                </span> <span i18n_label="add.product"></span></button></a>
                 <?php
             }
             ?>
-            <h1><span i18n_label="shop.page.caption"></span></h1>
+            <h1><span class="glyphicon glyphicon-search"></span>  <span i18n_label="shop.page.caption"></span></h1>
+            <div id="shop-search-form">
+                <div class="row">
+                    <div class="col-md-4">
+                        <span i18n_label="search.by.title"></span>
+                        <select class="search-product-by-title"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <span i18n_label="search.by.category"></span><br/>
+                        <select class="search-product-by-category"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <span i18n_label="search.by.description"></span>
+                        <input type="text" class="form-control search-by-description">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <button id="search-btn" type="submit" class="btn btn-primary"><span i18n_label="search.page.search"></span></button>
+                    </div>
+                </div>
+            </div>
             <div id="items-area" class="row">			
             </div>
         </div> 
