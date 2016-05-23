@@ -39,7 +39,7 @@
 		        <ul class=\"dropdown-menu\">
 		          <li><a href=\"#\"><span i18n_label=\"profile\"></span></a></li>
 		          <li class=\"divide\r\"></li>
-		          <li><a onclick=\"logOut()\" id=\"logout-btn\"><span i18n_label=\"logout\"></span></a></li>
+		          <li><a href=\"#\" id=\"logout-btn\"><span i18n_label=\"logout\"></span></a></li>
 		        </ul>
 		      </li>";
 		      }

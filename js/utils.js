@@ -127,36 +127,32 @@ utils.extractQueryParams = function(string) {
 }
 
 /**
- * Extracts only the real URL part, ignoring the query parameters.
- * 
- * @returns the real URL part, without the query parameters
- */
-utils.getPureURL = function() {
-	var url = document.URL;
-	if (url.indexOf("?") != -1) {
-		var endIndex = url.indexOf("?");
-		return url.substring(0, endIndex);
+	* Extracts only the real URL part, ignoring the query parameters.
+	*
+	* @returns the real URL part, without the query parameters
+	*/
+	utils.getPureURL = function() {
+		var url = document.URL;
+		if (url.indexOf("?") != -1) {
+			var endIndex = url.indexOf("?");
+			return url.substring(0, endIndex);
+		}
+		return url;
 	}
-	return url;
+
+	/**
+	 * Returns the current date as a string in format: dd/mm/yyyy
+	 */
+	utils.getCurrentDate = function() {
+		return utils.parseDate(new Date());
 }
 
 /**
- * Returns the current date as a string in format: dd/mm/yyyy
+ * Parses the given date into format dd.mm.yyyy
+ *
+ * @param inputDate is the input date
+ * @returns {string}  - the parsed date string
  */
-utils.getCurrentDate = function() {
-	var currentDate = new Date();
-	var date = currentDate.getDate();
-	if (date < 10) {
-		date = "0" + date;
-	}
-	var month = currentDate.getMonth() + 1;
-	if (month < 10) {
-		month = "0" + month;
-	}
-	var year = currentDate.getFullYear();
-	return date + "/" + month + "/" + year;
-}
-
 utils.parseDate = function(inputDate) {
 	var date = inputDate.getDate();
 	if (date < 10) {
@@ -199,6 +195,23 @@ utils.getBaseURL = function() {
 	return document.URL.substring(0, document.URL.lastIndexOf("/"));
 }
 
+/**
+ * Initializes the behaviour (click handlers, tooltips, etc) of the header elements.
+ * This method has to be invoked after the page is fully loaded.
+ */
+utils.initializeHeaderBehaviour = function() {
+	utils.initiateHeaderToolTips();
+	//attach click handler to the logout button
+	$("#logout-btn").click(function() {
+		$.post("services/AuthenticationService.php?action=logout", {}).done(function (data) {
+			if(data.status == true) {
+				//if the logout is successful, reload the page in order to refresh the header items
+				document.location.reload(true);
+			}
+		});
+	});
+}
+
 utils.initiateHeaderToolTips = function() {
 	var count = 0;
 	var totalPrice = 0;
@@ -210,9 +223,9 @@ utils.initiateHeaderToolTips = function() {
 		var newTitle = jQuery.i18n.map["products.count"] + ": " + count +
 			"<br/>" + jQuery.i18n.map["price.total"] + ": " + totalPrice;
 		$("#header-cart").find("a").attr("title", newTitle);
-		$('[data-toggle="tooltip"]').tooltip({html: true});
+		$('#header-cart a').tooltip({html: true});
 		//this is made in order to refresh the tooltip's title instantaneously
-		$('[data-toggle="tooltip"]').tooltip('hide')
+		$('#header-cart a').tooltip('hide')
 			.attr('data-original-title', newTitle)
 			.tooltip('fixTitle');
 	});

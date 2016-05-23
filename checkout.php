@@ -16,7 +16,7 @@ include 'lib/utils.php';
              * Displays the cart items (if any) at page load.
              */
             $(document).ready(function () {
-                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
+                languageUtils.applyLabelsToHTML(utils.initializeHeaderBehaviour);
                 loadCartProducts();
 
                 $(".address-switch input").change(function() {

@@ -124,7 +124,7 @@ if(!isLogged()) {
                     });
                     $("#items-area").html(itemsHtml);
                 }).done(function (data) {
-                    languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
+                    languageUtils.applyLabelsToHTML(utils.initializeHeaderBehaviour);
                 });
             }
         </script>

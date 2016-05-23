@@ -16,6 +16,7 @@ const PRODUCT_REMOVED_FROM_CART = "product.removed.shopping.cart";
 const ADDED_TO_CART = "added.to.shopping.cart";
 const MORE_ADDED_TO_CART = "more.items.added.to.shopping.cart";
 const CART_IS_EMPTY = "shopping.cart.empty";
+const LOGIN_REQUIRED = "shopping.cart.login.required";
 
 
 if ($requestMethod == "GET") {
@@ -36,6 +37,12 @@ if ($requestMethod == "GET") {
         returnEmptyJsonArray();
     }
 } else if ($requestMethod == "POST") {
+    if(!isLogged()) {
+        $response = array("message" => LOGIN_REQUIRED, "success" => false);
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        return;
+    }
     //only the product ID and the requested quantity are passed via the POST
     $productID = filter_var($_POST["productID"], FILTER_SANITIZE_NUMBER_INT);
     $quantity = filter_var($_POST["quantity"], FILTER_SANITIZE_NUMBER_INT);
@@ -70,7 +77,9 @@ if ($requestMethod == "GET") {
         }
         $message = ADDED_TO_CART;
     }
-    echo $message;
+    $response = array("message" => $message, "success" => true);
+    header('Content-Type: application/json');
+    echo json_encode($response);
 } else if ($requestMethod == "DELETE") {
     if (isset($_SESSION["products"])) {
         //If an ID is given to the delete handler, remove that product from the shopping cart

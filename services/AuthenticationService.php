@@ -40,6 +40,12 @@ if ($requestMethod == "GET") {
         header('Content-Type: application/json');
         echo json_encode($response);
         return;
+    } else if ($action == "logout") {
+        logOut();
+        $response = array();
+        $response["status"] = true;
+        header('Content-Type: application/json');
+        echo json_encode($response);
     }
 }
 
@@ -76,6 +82,7 @@ function logOut() {
         if (isset($_SESSION['isAdmin'])) {
             unset($_SESSION['isAdmin']);
         }
+        //this is brutal. Can't we find a way to preserve them?
         if (isset($_SESSION['products'])) {
             unset($_SESSION['products']);
         }

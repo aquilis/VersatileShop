@@ -36,6 +36,11 @@ include 'lib/utils.php';
                 categoryPickerOptions
             );
 
+            $("#reset-btn").click(function() {
+                $("#shop-search-form").find("select").select2("val", "");
+                $("#shop-search-form").find("input").val("");
+            });
+
             $("#search-btn").click(function() {
                 utils.displayAjaxLoader("items-area", "Loading...", false);
                 var productID = $(".search-product-by-title").val() || "";
@@ -90,6 +95,9 @@ include 'lib/utils.php';
             //make the get request and display the result
             $.getJSON("services/SearchService.php?action=search" + queryParams, function (data) {
                 var itemsHtml = "";
+                //that initialization is here, because otherwise the labels map won't be available
+                //when buildinng the html below
+                languageUtils.applyLabelsToHTML(utils.initializeHeaderBehaviour);
                 if (data.length === 0) {
                     itemsHtml = "<h4>" + jQuery.i18n.map['search.page.no.results'] + "</h4>";
                 } else {
@@ -117,7 +125,7 @@ include 'lib/utils.php';
                 $(".product-tile .btn-primary").click(function () {
                     loadProduct($(this).attr("productID"));
                 });
-                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
+                //languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
             });
         };
 
@@ -241,8 +249,15 @@ include 'lib/utils.php';
         function addToCart(productID, quantity) {
             $.post("services/ShoppingCartService.php", {productID: productID, quantity: quantity}, function () {
             }).done(function (data) {
+                    var alertClass = "alert-success";
+                    var iconClass = "glyphicon-ok";
+                    if(data.success == false) {
+                        alertClass = "alert-danger";
+                        iconClass = "glyphicon-remove";
+                    }
                     utils.initiateHeaderToolTips();
-                    var html = "<div class=\"alert alert-success\" role=\"alert\"><span class=\"glyphicon glyphicon-ok\"></span>   " + jQuery.i18n.map[data.trim()] + "</div>";
+                    var html = "<div class=\"alert "+ alertClass + "\" role=\"alert\"><span class=\"glyphicon "+ iconClass +"\"></span>   " +
+                                    jQuery.i18n.map[data.message.trim()] + "</div>";
                     var resulPanel = $("#shopping-cart-result");
                     resulPanel.fadeIn("fast");
                     resulPanel.html(html);
@@ -307,6 +322,7 @@ include 'lib/utils.php';
                 <div class="row">
                     <div class="col-md-4">
                         <button id="search-btn" type="submit" class="btn btn-primary"><span i18n_label="search.page.search"></span></button>
+                        <button id="reset-btn" type="submit" class="btn btn-default"><span i18n_label="search.page.reset"></span></button>
                     </div>
                 </div>
             </div>

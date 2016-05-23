@@ -15,7 +15,7 @@ include 'lib/utils.php';
         <script>
             $(document).ready(function () {
                 $(".nav li[id=header-home]").addClass("active");
-                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
+                languageUtils.applyLabelsToHTML(utils.initializeHeaderBehaviour);
             });
         </script>
     </head>

@@ -28,7 +28,7 @@ if(!isLogged() || !isset($_SESSION['isAdmin'])) {
 
             $(document).ready(function () {
                 $(".nav li[id=header-dashboard]").addClass("active");
-                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
+                languageUtils.applyLabelsToHTML(utils.initializeHeaderBehaviour);
                 loadOrdersInTimeWidget(TIME_INTERVAL_DAY);
                 loadMostBoughtProductWidget();
                 loadRevenueByTimeWidget(TIME_INTERVAL_DAY);

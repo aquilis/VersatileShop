@@ -95,7 +95,7 @@ if(!isLogged()) {
                             utils.displayAndFadeOutResultsPanel("result-panel", html, "fast");
                         });
                     });
-                    languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
+                    languageUtils.applyLabelsToHTML(utils.initializeHeaderBehaviour);
                 });
             }
         </script>

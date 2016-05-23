@@ -121,7 +121,7 @@ include 'lib/utils.php';
                         });
                     });
                 });
-                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
+                languageUtils.applyLabelsToHTML(utils.initializeHeaderBehaviour);
                 $('.file-picker').attr("title", jQuery.i18n.map["only.files.image.directory"]);
                 $('#video-url-field').attr("title", jQuery.i18n.map["paste.here.src.attribute"]);
                 $('[data-toggle="tooltip"]').tooltip();

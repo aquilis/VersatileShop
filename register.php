@@ -176,7 +176,7 @@ include 'lib/utils.php';
                         });
                     });
                 });
-                languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
+                languageUtils.applyLabelsToHTML(utils.initializeHeaderBehaviour);
             });
         </script>
     </head>

@@ -15,10 +15,20 @@ include_once 'lib/utils.php';
     </head>
     <script>
         $(document).ready(function () {
-            languageUtils.applyLabelsToHTML(utils.initiateHeaderToolTips);
-            $("#inputUsername").attr("placeholder", jQuery.i18n.map['username']);
-            $("#inputPassword").attr("placeholder", jQuery.i18n.map['password']);
-            $("#login-btn").click(function() {
+            languageUtils.applyLabelsToHTML(utils.initializeHeaderBehaviour);
+            var loginButton = $("#login-btn");
+            $("#inputUsername").attr("placeholder", jQuery.i18n.map['username']).bind('keypress',function (event){
+                if (event.keyCode === 13){
+                    loginButton.trigger('click');
+                }
+            });
+            $("#inputPassword").attr("placeholder", jQuery.i18n.map['password']).bind('keypress',function (event){
+                if (event.keyCode === 13){
+                    loginButton.trigger('click');
+                }
+            });
+
+            loginButton.click(function() {
 
                 var formUsername = $("#inputUsername").val();
                 var formPassword = $("#inputPassword").val();
