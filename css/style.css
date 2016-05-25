@@ -299,11 +299,16 @@ ul.ui-autocomplete.ui-menu li:hover {
     cursor: pointer;
 }
 
-#shop-search-form {
+.search-form-compact {
     margin-top: 32px;
     margin-bottom: 32px;
 }
 
-#shop-search-form select {
+.search-form-compact .row {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.search-form-compact select {
     width: 100%;
 }

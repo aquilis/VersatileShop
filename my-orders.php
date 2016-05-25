@@ -101,7 +101,7 @@ if(!isLogged()) {
                             "</td>"+
                             "<td>" +
                             "<span i18n_label=\"ordered.on\"></span>:</br>" +
-                                element.orderDate +
+                                utils.parseDate(new Date(element.orderDate)) +
                             "</td>"+
                             "</tr>"+
                             "<tr>" +

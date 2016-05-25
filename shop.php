@@ -26,12 +26,12 @@ include 'lib/utils.php';
                 displayProductsByCriteria({});
             }
 
-            var titlePickerOptions = getAutocompleteOptions("services/SearchService.php?action=allTitles", "productID", "title");
+            var titlePickerOptions = utils.getBasicAutocompleteConfig("services/SearchService.php?action=allTitles", "productID", "title");
             $(".search-product-by-title").select2(
                 titlePickerOptions
             );
 
-            var categoryPickerOptions = getAutocompleteOptions("services/SearchService.php?action=allCategories", "categoryID", "categoryName");
+            var categoryPickerOptions = utils.getBasicAutocompleteConfig("services/SearchService.php?action=allCategories", "categoryID", "categoryName");
             $(".search-product-by-category").select2(
                 categoryPickerOptions
             );
@@ -59,32 +59,6 @@ include 'lib/utils.php';
                 displayProductsByCriteria(criteria);
             });
         });
-
-        function getAutocompleteOptions(serviceURL, idAttributeName, textAttributeName) {
-            return {
-                ajax: {
-                    url: serviceURL,
-                    dataType: 'json',
-                    tags: true,
-                    minimumInputLength: 0,
-                    data: function (params) {
-                        var data = {};
-                        if(params.term && params.term.length > 0) {
-                            data.term = params.term;
-                        }
-                        return data;
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: $.map(data, function(element) {
-                                return { id: element[idAttributeName], text: element[textAttributeName] };
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            }
-        };
 
         function displayProductsByCriteria(criteria) {
             //first build the query params that will be attached to the URL
@@ -304,7 +278,7 @@ include 'lib/utils.php';
             }
             ?>
             <h1><span class="glyphicon glyphicon-search"></span>  <span i18n_label="shop.page.caption"></span></h1>
-            <div id="shop-search-form">
+            <div id="shop-search-form" class="search-form-compact">
                 <div class="row">
                     <div class="col-md-4">
                         <span i18n_label="search.by.title"></span>

@@ -43,6 +43,20 @@ class UsersDAO extends BaseDAO {
         return count($result) > 0;
     }
 
+    /**
+     * Gets all available usernames in the DB.
+     *
+     * @param $term is the search term to filter users by
+     * @return array
+     */
+    public function getAllUsernames($term) {
+        if(isset($term) && strlen($term) > 0) {
+            $criteria = array("username" => "*" . $term . "*");
+            return $this->getByCriteria(array("username"), $criteria , "", "");
+        }
+        return $this->getProjectionOf(array("username"));
+    }
+
     private function persistUserAddress($userData) {
         $town = $userData["town"];
         $zipCode = $userData["zipCode"];

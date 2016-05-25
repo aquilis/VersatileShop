@@ -212,6 +212,40 @@ utils.initializeHeaderBehaviour = function() {
 	});
 }
 
+/**
+ * Creates a very basic configuration object needed for the select2 elements, according to the passed params.
+ *
+ * @param serviceURL is the service URL where the options will be retrieved from
+ * @param idAttributeName is the attribute name that will be put as ID of the options and selections
+ * @param textAttributeName is the attribute name that will be put as label of the options and selections
+ * @returns the configuration as JSON object
+ */
+utils.getBasicAutocompleteConfig = function(serviceURL, idAttributeName, textAttributeName) {
+	return {
+		ajax: {
+			url: serviceURL,
+			dataType: 'json',
+			tags: true,
+			minimumInputLength: 0,
+			data: function (params) {
+				var data = {};
+				if(params.term && params.term.length > 0) {
+					data.term = params.term;
+				}
+				return data;
+			},
+			processResults: function (data) {
+				return {
+					results: $.map(data, function(element) {
+						return { id: element[idAttributeName], text: element[textAttributeName] };
+					})
+				};
+			},
+			cache: true
+		}
+	}
+};
+
 utils.initiateHeaderToolTips = function() {
 	var count = 0;
 	var totalPrice = 0;

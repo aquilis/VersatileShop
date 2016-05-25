@@ -45,6 +45,47 @@ class OrdersDAO extends BaseDAO {
     }
 
     /**
+     * Gets the orders according to the provided criteria.
+     *
+     * @param $criteria is a map containing the filter field=>values. It may contain the following keys:
+     *                  username, dateFrom and status which have to be mapped to their expected values.
+     * @return array of the retrieved results.
+     */
+    public function getOrdersByCriteria($criteria) {
+        $usernameCondition = "";
+        if(isset($criteria["username"])) {
+            $usernameCondition = " AND users.username = '". mysqli_real_escape_string($this->dbConnection, $criteria["username"]) . "' ";
+        }
+        $dateFromCondition = "";
+        if(isset($criteria["dateFrom"])) {
+            $time = strtotime($criteria["dateFrom"]);
+            $dateFrom = date('Y-m-d', $time);
+            $dateFromCondition = " AND orders.orderDate > '" . $dateFrom . "' ";
+        }
+        $statusCondition = "";
+        if(isset($criteria["status"])) {
+            $statusCondition = " AND orders.status ='" . mysqli_real_escape_string($this->dbConnection, $criteria["status"]) . "' ";
+        }
+        $sqlQuery = "SELECT orders.orderDate, orders.shippingDate, orders.status, users.username,
+							products.productID, products.title, products.thumbnailPath, products.manufacturer,
+							orders_products.quantity, orders_products.historicPrice
+					FROM orders, users, orders_products, products WHERE
+					orders.username = users.username AND
+                    orders.orderID= orders_products.orderID AND
+                    orders_products.productID = products.productID" .
+                    $usernameCondition .
+                    $dateFromCondition .
+                        $statusCondition .
+                    " ORDER BY orders.orderDate DESC";
+        $result = mysqli_query($this->dbConnection, $sqlQuery) or trigger_error("Query Failed: " . mysql_error());
+        $data = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            array_push($data, $row);
+        }
+        return $data;
+    }
+
+    /**
      * Gets all orders for the provided user name, according to the allowed states param passed to the method.
      *
      * @param $userName is the user name

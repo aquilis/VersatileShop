@@ -18,7 +18,8 @@
 					  "<li id=\"header-orders\"><a href=\"my-orders.php\"><span class=\"glyphicon glyphicon-list-alt\">  </span><span i18n_label=\"my.orders.heading\"></span></a></li>";
 
 				if(isset($_SESSION['isAdmin'])) {
-					echo  "<li id=\"header-dashboard\"><a href=\"admin-dashboard.php\"><span class=\"glyphicon glyphicon-signal\">  </span><span i18n_label=\"admin.dashboard.heading\"></span></a></li>";
+					echo  "<li id=\"header-orders-management\"><a href=\"orders-management.php\"><span class=\"glyphicon glyphicon-globe\">  </span><span i18n_label=\"orders.management.heading\"></span></a></li>" .
+					      "<li id=\"header-dashboard\"><a href=\"admin-dashboard.php\"><span class=\"glyphicon glyphicon-signal\">  </span><span i18n_label=\"admin.dashboard.heading\"></span></a></li>";
 				}
 			}
 			?>

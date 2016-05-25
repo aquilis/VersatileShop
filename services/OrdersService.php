@@ -23,6 +23,11 @@ $productDAO = new ProductDAO("products");
 
 const INITIAL_ORDER_STATUS = OrderStates::PENDING;
 
+const TIME_INTERVAL_DAY = "time.interval.day";
+const TIME_INTERVAL_WEEK = "time.interval.week";
+const TIME_INTERVAL_MONTH = "time.interval.month";
+
+
 //avoid special characters and sql injection
 $requestMethod = filter_input(INPUT_SERVER, "REQUEST_METHOD", FILTER_SANITIZE_STRING);
 
@@ -41,6 +46,29 @@ if ($requestMethod == "GET") {
         $jsonData = $ordersDAO->getAllOrdersFor($_SESSION['username']);
         header('Content-Type: application/json');
         echo json_encode($jsonData);
+    } else if (($action == "ordersByCriteria") && isLogged() && isset($_SESSION['isAdmin'])) {
+        $criteria = array();
+        if(isset($_GET["username"])) {
+            $criteria["username"] = filter_input(INPUT_GET, "username", FILTER_SANITIZE_STRING);
+        }
+        if(isset($_GET["dateRange"])) {
+            $inputDate= $_GET["dateRange"];
+            $finalDate = null;
+            if($inputDate == TIME_INTERVAL_DAY) {
+                $finalDate = date('Y-m-d', strtotime('-1 day'));
+            } else if ($inputDate == TIME_INTERVAL_WEEK) {
+                $finalDate = date('Y-m-d', strtotime("-1 week"));
+            } else if ($inputDate == TIME_INTERVAL_MONTH) {
+                $finalDate = date('Y-m-d', strtotime("-1 months"));
+            }
+            $criteria["dateFrom"] = $finalDate;
+        }
+        if(isset($_GET["status"])) {
+            $criteria["status"] = filter_input(INPUT_GET, "status", FILTER_SANITIZE_STRING);
+        }
+        $data = $ordersDAO->getOrdersByCriteria($criteria);
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
 } else if ($requestMethod == "POST") {
     if(!isLogged()) {
