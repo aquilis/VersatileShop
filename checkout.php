@@ -39,7 +39,7 @@ include 'lib/utils.php';
                             phone: $("#phone-field").val()
                         };
                     }
-                    $.post("services/OrdersService.php", orderDetails).done(function (data) {
+                    $.post("services/OrdersService.php?action=add", orderDetails).done(function (data) {
                         var serverValidationResult = data;
                         if (serverValidationResult.status === false) {
                             if (serverValidationResult.authenticationFailed === true) {

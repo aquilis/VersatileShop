@@ -93,6 +93,61 @@ if(!isLogged() || !isset($_SESSION['isAdmin'])) {
                 loadOrdersByCriteria(queryParams);
             }
 
+            function requestOrderStatusSwitch(orderID, newStatus) {
+                var requestData = {
+                    orderID: orderID,
+                    newStatus: newStatus
+                };
+                $.post("services/OrdersService.php?action=changeStatus", requestData).done(function (data) {
+                    if(data.status == true) {
+                        location.reload();
+                    }
+                });
+            }
+
+            function buildOrderStatusSwitch(currentStatus, orderID) {
+                var availableStatuses = "";
+                if(currentStatus !== STATUS_PENDING) {
+                    availableStatuses += "<li><a href=\"#\" order-id=\"" + orderID + "\" new-status=\"" + STATUS_PENDING + "\"" +
+                                        " class=\"switch-to-pending\">" + "<span i18n_label=\"order.state.pending\"></span></a></li>";
+                }
+                if(currentStatus !== STATUS_SHIPPED) {
+                    availableStatuses+= "<li><a href=\"#\" order-id=\"" + orderID + "\" new-status=\"" + STATUS_SHIPPED+ "\"" +
+                        "class=\"switch-to-shipped\"><span i18n_label=\"order.state.shipped\"></span></a></li>";
+                }
+                if(currentStatus !== STATUS_REJECTED) {
+                    availableStatuses+= "<li><a href=\"#\" order-id=\"" + orderID + "\" new-status=\"" + STATUS_REJECTED + "\"" +
+                        "class=\"switch-to-rejected\"><span i18n_label=\"order.state.rejected\"></span></a></li>";
+                }
+                if(currentStatus !== STATUS_RECEIVED) {
+                    availableStatuses+= "<li><a href=\"#\" order-id=\"" + orderID + "\" new-status=\"" + STATUS_RECEIVED + "\"" +
+                        "class=\"switch-to-received\"><span i18n_label=\"order.state.received\"></span></a></li>";
+                }
+
+                return "<div class=\"dropdown orders-state-switch\">" +
+                            "<button class=\"btn btn-default dropdown-toggle\" type=\"button\" id=\"dropdownMenu1\" " +
+                            "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\">" +
+                            "<span i18n_label=\"mark.order.state.as\"></span>" +
+                            "<span class=\"caret\"></span>" +
+                            "</button>" +
+                            "<ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenu1\">" +
+                                availableStatuses +
+                            "</ul>" +
+                        "</div>";
+            };
+
+            function buildShippingInfo(orderInfo) {
+                return "<span class='glyphicon glyphicon-user'></span> " +
+                       orderInfo.firstName + " " +
+                       orderInfo.lastName + " (" +
+                       orderInfo.username + ") <br/> <span class='glyphicon glyphicon-home'></span> " +
+                       orderInfo.address + ", " +
+                       orderInfo.town + " <br/> zip Code: " +
+                       orderInfo.zipCode + " <br/> <span class='glyphicon glyphicon-phone'></span> " +
+                       orderInfo.phone + " <br/><span class='glyphicon glyphicon-envelope'></span> " +
+                       orderInfo.email;
+            };
+
             /**
              * Loads the orders, according to the passed query parameters criteria string.
              *
@@ -109,6 +164,8 @@ if(!isLogged() || !isset($_SESSION['isAdmin'])) {
                         var shippingDate = element.shippingDate;
                         if(shippingDate.indexOf("0000-00-00") > -1) {
                             shippingDate = "<span class='glyphicon glyphicon-remove-sign'></span>";
+                        } else {
+                            shippingDate = utils.parseDate(new Date(shippingDate));
                         }
                         //the status label has different color according to the order status
                         var labelClass = "label-primary";
@@ -124,7 +181,10 @@ if(!isLogged() || !isset($_SESSION['isAdmin'])) {
                                     "<div class=\"panel-heading\"><h4>" +
                             "<span i18n_label=\"order.state\"></span>   " +
                             "<span class=\"label " + labelClass + "\"><span i18n_label=\"" + element.status +  "\"></span></span>" +
+                             buildOrderStatusSwitch(element.status, element.orderID) +
                         "</h4>" +
+                         "<a style=\"cursor:pointer\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" + buildShippingInfo(element) + "\"><span class=\"glyphicon glyphicon-info-sign\">" +
+                         "</span><span i18n_label=\"shipping.info\"></span></a>" +
                         "</div>" +
                         "<div class=\"panel-body\">" +
                             "<table class=\"table\" cellpadding=\"24\" >"+
@@ -167,6 +227,12 @@ if(!isLogged() || !isset($_SESSION['isAdmin'])) {
                     });
                     $("#items-area").html(itemsHtml);
                 }).done(function (data) {
+                    $("#items-area").find(".orders-state-switch").find("a").click(function() {
+                        var thisElement = $(this);
+                        var orderID = thisElement.attr("order-id");
+                        var newStatus = thisElement.attr("new-status");
+                        requestOrderStatusSwitch(orderID, newStatus);
+                    });
                     languageUtils.applyLabelsToHTML(function() {
                         //these have to be initialized only once per page load :)
                         if(!intializedLabels) {
@@ -177,6 +243,7 @@ if(!isLogged() || !isset($_SESSION['isAdmin'])) {
                             intializedLabels = true;
                         }
                         utils.initializeHeaderBehaviour();
+                        $('[data-toggle="tooltip"]').tooltip({html:true});
                     });
                 });
             }

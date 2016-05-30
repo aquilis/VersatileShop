@@ -66,12 +66,15 @@ class OrdersDAO extends BaseDAO {
         if(isset($criteria["status"])) {
             $statusCondition = " AND orders.status ='" . mysqli_real_escape_string($this->dbConnection, $criteria["status"]) . "' ";
         }
-        $sqlQuery = "SELECT orders.orderDate, orders.shippingDate, orders.status, users.username,
+        $sqlQuery = "SELECT orders.orderID, orders.orderDate, orders.shippingDate, orders.status, users.username,
 							products.productID, products.title, products.thumbnailPath, products.manufacturer,
+							users.username, users.firstName, users.lastName,
+							addresses.town,addresses.address, addresses.phone, addresses.email, addresses.zipCode,
 							orders_products.quantity, orders_products.historicPrice
-					FROM orders, users, orders_products, products WHERE
+					FROM orders, users, orders_products, products, addresses WHERE
 					orders.username = users.username AND
                     orders.orderID= orders_products.orderID AND
+                    orders.addressID = addresses.addressID AND
                     orders_products.productID = products.productID" .
                     $usernameCondition .
                     $dateFromCondition .
